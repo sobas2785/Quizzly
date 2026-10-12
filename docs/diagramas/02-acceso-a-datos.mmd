@@ -1,0 +1,115 @@
+classDiagram
+    direction LR
+
+    class AppDatabase {
+        <<abstract · RoomDatabase>>
+        +usuarioDao() UsuarioDao
+        +partidaDao() PartidaDao
+        +preguntaDao() PreguntaDao
+        +logroUsuarioDao() LogroUsuarioDao
+        +obtener(context)$ AppDatabase
+    }
+
+    class UsuarioDao {
+        <<interface · Dao>>
+        +insertar(usuario) Long
+        +actualizar(usuario)
+        +obtenerPorId(id) Usuario?
+        +obtenerPorCorreo(correo) Usuario?
+        +obtenerPorNombreUsuario(nombreUsuario) Usuario?
+        +actualizarProgreso(usuarioId, nivel, puntos)
+        +actualizarRachaMaximaSiCorresponde(usuarioId, racha)
+        +obtenerRankingGlobal() List~Usuario~
+    }
+
+    class PartidaDao {
+        <<interface · Dao>>
+        +insertar(partida) Long
+        +obtenerHistorialReciente(usuarioId) List~Partida~
+        +contarPartidasJugadas(usuarioId) Int
+        +obtenerMejorRachaHistorica(usuarioId) Int?
+        +obtenerCategoriasJugadas(usuarioId) List~Int~
+        +obtenerDesde(desde) List~Partida~
+    }
+
+    class PreguntaDao {
+        <<interface · Dao>>
+        +insertarTodas(preguntas)
+        +obtenerPreguntaAleatoria(categoriaId, dificultad) Pregunta?
+        +contarPreguntas() Int
+        +borrarTodas()
+        +obtenerPorCategoria(categoriaId) List~Pregunta~
+    }
+
+    class LogroUsuarioDao {
+        <<interface · Dao>>
+        +insertar(logro)
+        +obtenerLogrosDeUsuario(usuarioId) List~LogroUsuario~
+        +yaTieneLogro(usuarioId, logroId) Boolean
+    }
+
+    class UsuarioRepository {
+        +registrar(nombreUsuario, correo, contrasena) ResultadoRegistro
+        +autenticar(correo, contrasena) Usuario?
+        +obtenerPorId(id) Usuario?
+        +actualizarProgreso(usuarioId, nivel, puntos)
+        +actualizarRachaMaximaSiCorresponde(usuarioId, racha)
+        +obtenerRankingGlobal() List~Usuario~
+    }
+
+    class ResultadoRegistro {
+        <<sealed>>
+    }
+    class RegistroOk["ResultadoRegistro.Ok"] {
+        +usuarioId: Long
+    }
+    class RegistroError["ResultadoRegistro.Error"] {
+        +mensaje: String
+    }
+
+    class PartidaRepository {
+        +guardar(partida) Long
+        +obtenerHistorialReciente(usuarioId) List~Partida~
+        +contarPartidasJugadas(usuarioId) Int
+        +contarCategoriasJugadas(usuarioId) Int
+        +obtenerDesde(desde) List~Partida~
+    }
+
+    class PreguntaRepository {
+        +reemplazarTodas(preguntas)
+        +contarPreguntas() Int
+        +siguientePregunta(categoriaId, dificultad, yaUsadas) Pregunta?
+    }
+
+    class LogroRepository {
+        +desbloquear(usuarioId, codigos) List~String~
+        +obtenerDeUsuario(usuarioId) List~LogroUsuario~
+    }
+
+    class PreguntaSeeder {
+        <<object>>
+        +sembrarEnSegundoPlano(context)
+        -sembrarSiHaceFalta(context)
+        -parsear(json) List~Pregunta~
+    }
+
+    class HashUtils {
+        <<object>>
+        +sha256(texto) String
+    }
+
+    UsuarioDao --* AppDatabase
+    PartidaDao --* AppDatabase
+    PreguntaDao --* AppDatabase
+    LogroUsuarioDao --* AppDatabase
+
+    UsuarioRepository --> UsuarioDao
+    PartidaRepository --> PartidaDao
+    PreguntaRepository --> PreguntaDao
+    LogroRepository --> LogroUsuarioDao
+
+    UsuarioRepository ..> HashUtils : hashea la contraseña
+    UsuarioRepository ..> ResultadoRegistro
+    ResultadoRegistro <|-- RegistroOk
+    ResultadoRegistro <|-- RegistroError
+    PreguntaSeeder ..> PreguntaRepository : carga preguntas.json

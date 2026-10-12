@@ -1,0 +1,88 @@
+classDiagram
+    direction TB
+
+    class RankingActivity {
+        <<Activity>>
+        -mostrar(estado: EstadoRanking)
+        -mostrarFilas(tabla)
+    }
+
+    class RankingViewModel {
+        +online: Boolean
+        +periodo: Periodo
+        +estado: LiveData~EstadoRanking~
+        +elegir(periodo) Boolean
+        -consultar()
+        -rankingLocal(periodo) List~FilaRanking~
+    }
+
+    class EstadoRanking {
+        <<sealed>>
+    }
+
+    class RankingRemoto {
+        <<object>>
+        +disponible(context) Boolean
+        +miJugadorId(context, usuarioId) String?
+        +publicarPartida(context, jugador, puntos, modo, categoriaId)
+        +sincronizarJugador(context, jugador)
+        +obtenerRanking(periodo, ahora) List~FilaRanking~
+    }
+
+    class JugadorPublicado {
+        +usuarioId: Long
+        +nombre: String
+        +puntosTotales: Int
+        +nivel: Int
+    }
+
+    class SesionRemota {
+        <<object>>
+        +disponible(context) Boolean
+        +uidActual(context) String?
+        +uid() String
+        +jugadorId(uid, usuarioId) String
+    }
+
+    class Ranking {
+        <<object>>
+        +TAMANO = 50
+        +inicioDelPeriodo(periodo, ahora) Long?
+        +sumarPorJugador(partidas) List~FilaRanking~
+        +ordenar(filas) List~FilaRanking~
+    }
+
+    class Periodo {
+        <<enumeration>>
+        DIA
+        SEMANA
+        MES
+        GLOBAL
+    }
+
+    class FilaRanking {
+        +jugadorId: String
+        +nombre: String
+        +puntos: Int
+    }
+
+    class PuntajeDePartida {
+        +jugadorId: String
+        +nombre: String
+        +puntos: Int
+    }
+
+    RankingActivity --> RankingViewModel
+    RankingViewModel --> EstadoRanking
+    RankingViewModel --> Periodo
+    RankingViewModel ..> RankingRemoto : con Firebase
+    RankingViewModel ..> Ranking : sin Firebase, ranking local
+    RankingRemoto ..> SesionRemota : uid anónimo
+    RankingRemoto ..> JugadorPublicado
+    RankingRemoto ..> Ranking
+    Ranking ..> Periodo
+    Ranking ..> PuntajeDePartida : suma
+    Ranking ..> FilaRanking : devuelve
+
+    note for EstadoRanking "Cargando · Vacio · Error ·<br/>Tabla(filas, miJugadorId)"
+    note for RankingRemoto "Firestore:<br/>jugadores/{uid}_{usuarioId} → total (global)<br/>partidas/{auto} → puntos + fecha (día, semana, mes)"

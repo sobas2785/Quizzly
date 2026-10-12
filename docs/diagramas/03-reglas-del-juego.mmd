@@ -1,0 +1,84 @@
+classDiagram
+    direction TB
+
+    class LogicaJuego {
+        <<object>>
+        +PREGUNTAS_POR_PARTIDA = 5
+        +SEGUNDOS_POR_PREGUNTA = 15
+        +PUNTOS_BASE = 10
+        +PUNTOS_POR_NIVEL = 200
+        +logros: List~Logro~
+        +nombresDeLogros: Map~String,String~
+        +puntosDeRespuesta(segundosRestantes, rachaActual) Int
+        +nivelPara(puntosTotales) Int
+        +dificultadPara(nivel) String
+        +desenlaceIndividual(correctas, totalPreguntas) Desenlace
+        +esRachaDestacada(racha) Boolean
+        +logrosDeLaPartida(correctas, totalPreguntas, rachaMaxima, partidasJugadas, categoriasJugadas) List~String~
+        +puntosDentroDelNivel(puntosTotales) Int
+    }
+
+    class Categorias {
+        <<object>>
+        +todas: List~Categoria~
+        +porId(id) Categoria
+        +porIndice(indice) Categoria
+    }
+
+    class Categoria {
+        +id: Int
+        +nombre: String
+        +ilustracion: Int
+        +color: Int
+        +colorFondoClaro: Int
+        +colorTexto: Int
+    }
+
+    class Logro {
+        +codigo: String
+        +nombre: String
+        +descripcion: String
+        +icono: String
+    }
+
+    class Desenlace {
+        <<enumeration>>
+        GANADA
+        PERDIDA
+        EMPATE
+    }
+
+    class ResultadoPartida["ResultadoPartida.kt"] {
+        <<funciones>>
+        +finalizarPartida(context, usuarioId, modo, categoriaId, puntos, correctas, totalPreguntas, rachaMaxima) ResumenPartida
+    }
+
+    class ResumenPartida {
+        +puntos: Int
+        +correctas: Int
+        +totalPreguntas: Int
+        +rachaMaxima: Int
+        +nivel: Int
+        +subioDeNivel: Boolean
+        +puntosTotales: Int
+        +logrosNuevos: List~String~
+    }
+
+    class UsuarioRepository
+    class PartidaRepository
+    class LogroRepository
+    class RankingRemoto {
+        <<object>>
+    }
+
+    Categorias "1" --> "6" Categoria : todas
+    LogicaJuego "1" --> "6" Logro : logros
+    LogicaJuego ..> Desenlace
+    LogicaJuego ..> Categorias
+
+    ResultadoPartida ..> LogicaJuego : nivelPara · logrosDeLaPartida
+    ResultadoPartida ..> ResumenPartida : devuelve
+    ResultadoPartida ..> UsuarioRepository : actualiza progreso
+    ResultadoPartida ..> PartidaRepository : guarda historial
+    ResultadoPartida ..> LogroRepository : desbloquea logros
+    ResultadoPartida ..> RankingRemoto : publica en el ranking

@@ -1,0 +1,87 @@
+classDiagram
+    direction TB
+
+    class MainActivity {
+        <<Activity · login>>
+    }
+    class RegistroActivity {
+        <<Activity>>
+    }
+    class HomeActivity {
+        <<Activity · menú>>
+    }
+    class PerfilActivity {
+        <<Activity>>
+    }
+    class RankingActivity {
+        <<Activity>>
+    }
+    class DuelosActivity {
+        <<Activity>>
+    }
+
+    class AndroidViewModel {
+        <<Android Jetpack>>
+    }
+
+    class AccesoViewModel {
+        <<abstract>>
+        #usuarios: UsuarioRepository
+        +ocupado: LiveData~Boolean~
+        +efectos: Flow~EfectoAcceso~
+        #avisar(mensaje)
+        #entrar(usuarioId)
+    }
+
+    class LoginViewModel {
+        +ingresar(correo, contrasena)
+    }
+
+    class RegistroViewModel {
+        +registrar(nombre, correo, contrasena)
+        -validar(nombre, correo, contrasena) String?
+    }
+
+    class HomeViewModel {
+        +estado: LiveData~EstadoHome~
+        +turnosPendientes: LiveData~Int~
+        +cargar(usuarioId)
+    }
+
+    class PerfilViewModel {
+        +estado: LiveData~EstadoPerfil?~
+    }
+
+    class RankingViewModel {
+        +online: Boolean
+        +periodo: Periodo
+        +estado: LiveData~EstadoRanking~
+        +elegir(periodo) Boolean
+    }
+
+    class DuelosViewModel {
+        +estado: LiveData~EstadoDuelos~
+        +ocupado: LiveData~Boolean~
+        +efectos: Flow~EfectoDuelos~
+        +conectar()
+        +crear()
+        +unirse(textoDelCodigo)
+        +cancelar(duelo)
+    }
+
+    MainActivity --> LoginViewModel
+    RegistroActivity --> RegistroViewModel
+    HomeActivity --> HomeViewModel
+    PerfilActivity --> PerfilViewModel
+    RankingActivity --> RankingViewModel
+    DuelosActivity --> DuelosViewModel
+
+    LoginViewModel --|> AccesoViewModel
+    RegistroViewModel --|> AccesoViewModel
+    AccesoViewModel --|> AndroidViewModel
+    HomeViewModel --|> AndroidViewModel
+    PerfilViewModel --|> AndroidViewModel
+    RankingViewModel --|> AndroidViewModel
+    DuelosViewModel --|> AndroidViewModel
+
+    note for AndroidViewModel "GameViewModel y PreguntaViewModel<br/>también heredan de AndroidViewModel:<br/>se detallan en el diagrama de la partida"

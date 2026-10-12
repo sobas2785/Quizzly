@@ -1,0 +1,52 @@
+classDiagram
+    direction TB
+
+    class Sesion {
+        <<object>>
+        +SIN_SESION = -1
+        +iniciar(context, usuarioId)
+        +usuarioId(context) Long
+        +cerrar(context)
+    }
+
+    class Sonidos {
+        <<object>>
+        -pool: SoundPool
+        -pista: MediaPlayer
+        +inicializar(context)
+        +estaSilenciado(context) Boolean
+        +alternarSilencio(context) Boolean
+        +toque(context)
+        +acierto(context)
+        +error(context)
+        +tiempoAgotado(context)
+        +girarRuleta(context)
+        +ruletaDetenida(context)
+        +cambioDeTurno(context)
+        +cronometro(context)
+        +racha(context)
+        +finDePartida(context, desenlace, subioDeNivel, hayLogros)
+        +detenerPista()
+    }
+
+    class Vibracion {
+        <<object>>
+        +acierto(context)
+        +error(context)
+        +tiempoAgotado(context)
+        +categoriaElegida(context)
+        +toque(context)
+    }
+
+    class HashUtils {
+        <<object>>
+        +sha256(texto) String
+    }
+
+    class Efectos["Efectos.kt"] {
+        <<funciones>>
+        +AppCompatActivity.alRecibir(efectos, accion)
+    }
+
+    note for Sesion "Guarda el usuario logueado<br/>en SharedPreferences"
+    note for Sonidos "SoundPool: efectos cortos<br/>MediaPlayer: pistas largas<br/>El silencio se recuerda entre sesiones"

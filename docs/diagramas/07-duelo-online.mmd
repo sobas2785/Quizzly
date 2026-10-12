@@ -1,0 +1,102 @@
+classDiagram
+    direction TB
+
+    class DuelosActivity {
+        <<Activity · mis duelos>>
+        -mostrar(estado: EstadoDuelos)
+        -jugar(duelo, numero)
+        -pedirCodigo()
+        -compartir(codigo)
+    }
+
+    class DuelosViewModel {
+        +estado: LiveData~EstadoDuelos~
+        +ocupado: LiveData~Boolean~
+        +efectos: Flow~EfectoDuelos~
+        +conectar()
+        +crear()
+        +unirse(textoDelCodigo)
+        +cancelar(duelo)
+        -guardarLosTerminados(duelos, miJugadorId)
+    }
+
+    class GameActivity {
+        <<Activity · ruleta>>
+    }
+
+    class GameViewModel {
+        +esOnline: Boolean
+        -enviarTurno(resultado)
+        +reintentarEnvio()
+    }
+
+    class DuelosRemotos {
+        <<object>>
+        +crear(usuarioId, nombre) DueloOnline
+        +unirse(codigo, usuarioId, nombre) ResultadoUnirse
+        +jugarTurno(codigo, numero, puntos, acerto, categoriaId) DueloOnline
+        +cancelar(codigo)
+        +escucharMisDuelos(uid) Flow~List~DueloOnline~~
+    }
+
+    class ResultadoUnirse {
+        <<sealed>>
+    }
+
+    class SesionRemota {
+        <<object>>
+        +uid() String
+        +jugadorId(uid, usuarioId) String
+    }
+
+    class DueloOnline {
+        +codigo: String
+        +estado: EstadoDuelo
+        +turno: Int
+        +turnosJugados: Int
+        +jugadorId1 / jugadorId2: String
+        +nombre1 / nombre2: String
+        +puntos1 / puntos2: Int
+        +correctas1 / correctas2: Int
+        +ultimaCategoriaId: Int
+        +actualizado: Long
+        +numeroDe(jugadorId) Int?
+        +esTurnoDe(jugadorId) Boolean
+        +puntosDe(numero) Int
+        +rivalDe(jugadorId) String?
+        +desenlacePara(jugadorId) Desenlace?
+    }
+
+    class EstadoDuelo {
+        <<enumeration>>
+        ESPERANDO
+        EN_CURSO
+        TERMINADO
+        +clave: String
+    }
+
+    class ReglasDueloOnline {
+        <<object>>
+        +TURNOS_POR_JUGADOR = 3
+        +TURNOS_TOTALES = 6
+        +LARGO_DEL_CODIGO = 6
+        +nuevoCodigo() String
+        +normalizarCodigo(texto) String?
+        +estadoTrasElTurno(turnosJugadosAntes) EstadoDuelo
+        +ordenar(duelos, jugadorId) List~DueloOnline~
+    }
+
+    DuelosActivity --> DuelosViewModel
+    DuelosActivity ..> GameActivity : abre en modo online para jugar el turno
+    GameActivity --> GameViewModel
+    DuelosViewModel ..> DuelosRemotos : crear · unirse · cancelar · escuchar
+    GameViewModel ..> DuelosRemotos : jugarTurno
+    DuelosViewModel ..> ReglasDueloOnline
+    DuelosRemotos ..> SesionRemota
+    DuelosRemotos ..> ResultadoUnirse
+    DuelosRemotos ..> DueloOnline
+    DuelosRemotos ..> ReglasDueloOnline
+    DueloOnline --> EstadoDuelo
+
+    note for ResultadoUnirse "Unido(duelo) · NoExiste ·<br/>YaEmpezo · EsPropio"
+    note for DuelosRemotos "Firestore: duelos/{codigo}<br/>Crear, unirse y jugar van en transacciones.<br/>firestore.rules controla lo mismo en el servidor."

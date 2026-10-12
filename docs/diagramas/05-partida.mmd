@@ -1,0 +1,135 @@
+classDiagram
+    direction TB
+
+    class GameActivity {
+        <<Activity · ruleta>>
+        -girarRuleta()
+        -abrirRonda()
+        -mostrar(estado: EstadoJuego)
+        -cerrar(cierre: CierreDePartida)
+    }
+
+    class QuizWheelView {
+        <<View · Canvas>>
+        +rotationAngle: Float
+        +onDraw(canvas)
+        +getRotationForCategory(index) Float
+    }
+
+    class GameViewModel {
+        -guardado: SavedStateHandle
+        +modo: String
+        +esDuelo: Boolean
+        +esOnline: Boolean
+        +categoriaFija: Int?
+        +estado: LiveData~EstadoJuego~
+        +cierre: LiveData~CierreDePartida~
+        +girar() Int?
+        +ruletaDetenida()
+        +rondaPorJugar() RondaPorJugar
+        +rondaTerminada(resultado: ResultadoRonda) Boolean
+        +rondaCancelada()
+        +reintentarEnvio()
+        -cerrarPartida()
+        -enviarTurno(resultado: ResultadoRonda)
+    }
+
+    class EstadoJuego {
+        +fase: FaseDeJuego
+        +indiceSorteado: Int
+        +jugadorDeTurno: Int
+        +puntos: List~Int~
+    }
+
+    class FaseDeJuego {
+        <<enumeration>>
+        LISTA_PARA_GIRAR
+        GIRANDO
+        CATEGORIA_ELEGIDA
+        GUARDANDO
+        SIN_CONEXION
+    }
+
+    class RondaPorJugar {
+        +categoriaId: Int
+        +cantidad: Int
+    }
+
+    class CierreDePartida {
+        <<sealed>>
+    }
+    class SinSesion["CierreDePartida.SinSesion"]
+    class Guardada["CierreDePartida.Guardada"] {
+        +resumen: ResumenPartida
+        +puntos: List~Int~
+        +desenlace: Desenlace
+    }
+    class TurnoEnviado["CierreDePartida.TurnoEnviado"] {
+        +puntosDelTurno: Int
+        +duelo: DueloOnline
+    }
+
+    class PreguntaActivity {
+        <<Activity · preguntas>>
+        -mostrar(estado: EstadoPregunta)
+        -reaccionar(efecto: EfectoRespuesta)
+        -devolver(resultado: ResultadoRonda)
+    }
+
+    class PreguntaViewModel {
+        +estado: LiveData~EstadoPregunta~
+        +efectos: SharedFlow~EfectoRespuesta~
+        +iniciar(categoriaId, cantidad)
+        +responder(letra: String?)
+        -siguientePregunta()
+        -arrancarTemporizador()
+    }
+
+    class EstadoPregunta {
+        +pregunta: Pregunta?
+        +numero: Int
+        +cantidad: Int
+        +segundosRestantes: Int
+        +racha: Int
+        +puntos: Int
+        +respondida: Boolean
+        +letraElegida: String?
+        +resultado: ResultadoRonda?
+    }
+
+    class ResultadoRonda {
+        +puntos: Int
+        +correctas: Int
+        +total: Int
+        +rachaMaxima: Int
+    }
+
+    class EfectoRespuesta {
+        <<enumeration>>
+        ACIERTO
+        RACHA
+        ERROR
+        TIEMPO_AGOTADO
+    }
+
+    class ResultadoActivity {
+        <<Activity · resultado>>
+    }
+
+    GameActivity --> GameViewModel
+    GameActivity --> QuizWheelView
+    GameActivity ..> PreguntaActivity : abre la ronda
+    GameActivity ..> ResultadoActivity : muestra el resultado
+    GameViewModel --> EstadoJuego
+    EstadoJuego --> FaseDeJuego
+    GameViewModel ..> RondaPorJugar
+    GameViewModel ..> CierreDePartida
+    CierreDePartida <|-- SinSesion
+    CierreDePartida <|-- Guardada
+    CierreDePartida <|-- TurnoEnviado
+
+    PreguntaActivity --> PreguntaViewModel
+    PreguntaViewModel --> EstadoPregunta
+    PreguntaViewModel ..> EfectoRespuesta
+    EstadoPregunta --> ResultadoRonda
+    GameViewModel ..> ResultadoRonda : suma al marcador

@@ -1,0 +1,74 @@
+classDiagram
+    direction LR
+
+    class Usuario {
+        <<Entity · usuarios>>
+        +id: Long
+        +nombreUsuario: String
+        +correo: String
+        +contrasenaHash: String
+        +nivel: Int
+        +puntosTotales: Int
+        +rachaMaxima: Int
+        +fechaRegistro: Long
+    }
+
+    class Partida {
+        <<Entity · partidas>>
+        +id: Long
+        +usuarioId: Long
+        +modo: String
+        +categoriaId: Int
+        +puntos: Int
+        +correctas: Int
+        +totalPreguntas: Int
+        +rachaMaxima: Int
+        +nivelAlcanzado: Int
+        +fecha: Long
+    }
+
+    class LogroUsuario {
+        <<Entity · logros_usuario>>
+        +id: Long
+        +usuarioId: Long
+        +logroId: String
+        +fechaObtenido: Long
+    }
+
+    class Pregunta {
+        <<Entity · preguntas>>
+        +id: Long
+        +categoriaId: Int
+        +texto: String
+        +opcionA: String
+        +opcionB: String
+        +opcionC: String
+        +opcionD: String
+        +respuesta: String
+        +dificultad: String
+    }
+
+    class Categoria {
+        +id: Int
+        +nombre: String
+        +ilustracion: Int
+        +color: Int
+        +colorFondoClaro: Int
+        +colorTexto: Int
+    }
+
+    class Logro {
+        +codigo: String
+        +nombre: String
+        +descripcion: String
+        +icono: String
+    }
+
+    Usuario "1" --> "0..*" Partida : juega
+    Usuario "1" --> "0..*" LogroUsuario : desbloquea
+    Partida "0..*" --> "1" Categoria : categoriaId
+    Pregunta "0..*" --> "1" Categoria : categoriaId
+    LogroUsuario "0..*" --> "1" Logro : logroId
+
+    note for Categoria "No es una tabla:<br/>las 6 categorías son<br/>constantes en Categorias.todas"
+    note for Logro "No es una tabla:<br/>catálogo fijo en LogicaJuego.logros"

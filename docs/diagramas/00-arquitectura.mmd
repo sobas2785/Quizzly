@@ -1,0 +1,24 @@
+flowchart TB
+    UI["Presentación (paquete raíz)<br/>9 Activities y QuizWheelView"]
+    VM["viewmodel<br/>un ViewModel por pantalla"]
+    GAME["game<br/>reglas del juego, sin dependencias de Android"]
+    REMOTE["data.remote (Firebase)<br/>SesionRemota · RankingRemoto · DuelosRemotos"]
+    REPO["data.repository<br/>UsuarioRepository · PartidaRepository<br/>PreguntaRepository · LogroRepository"]
+    LOCAL["data.local (Room)<br/>entity · dao · database · seed"]
+    DB[("SQLite<br/>quizzly.db")]
+    FS[("Cloud Firestore<br/>y Auth anónima")]
+    JSON[/"assets/preguntas.json<br/>180 preguntas"/]
+    UTIL["util (transversal)<br/>Sesion · Sonidos · Vibracion · HashUtils<br/>lo usan todas las capas"]
+
+    UI --> VM
+    VM --> GAME
+    VM --> REMOTE
+    VM --> REPO
+    GAME --> REPO
+    GAME -- publica partidas --> REMOTE
+    REMOTE --> FS
+    REPO --> LOCAL
+    JSON -- PreguntaSeeder --> LOCAL
+    LOCAL --> DB
+
+    style UTIL fill:#f5f5f5,stroke:#9ca3af,stroke-dasharray: 5 5
