@@ -9,7 +9,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.calypso.quizzly.data.local.seed.PreguntaSeeder
 import com.calypso.quizzly.util.Sesion
 import com.calypso.quizzly.util.Sonidos
 import com.calypso.quizzly.util.alRecibir
@@ -35,13 +34,8 @@ class MainActivity : AppCompatActivity() {
             insets
         }
 
-        // El banco de preguntas se carga en el primer arranque y cada vez que cambia el JSON.
-        PreguntaSeeder.sembrarEnSegundoPlano(this)
-
-        // Los efectos cortos se precargan acá para que el primer toque ya suene.
-        Sonidos.inicializar(this)
-
-        if (Sesion.usuarioId(this) != Sesion.SIN_SESION) {
+        // El banco de preguntas y los sonidos ya los cargó SplashActivity, que es la que abre la app.
+        if (Sesion.usuarioVigente(this) != Sesion.SIN_SESION) {
             irAlMenu()
             return
         }

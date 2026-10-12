@@ -21,6 +21,11 @@ object LogicaJuego {
     const val PUNTOS_BASE = 10
     const val PUNTOS_POR_NIVEL = 200
 
+    /** Duelo local (P7): cuántas preguntas responde cada jugador, a elegir en la sala de duelo. */
+    val RONDAS_DE_DUELO = listOf(5, 10, 15)
+    const val RONDAS_DE_DUELO_POR_DEFECTO = 5
+    const val LARGO_MAXIMO_DE_NOMBRE = 20
+
     /** Puntos de una respuesta correcta: base + bonus por tiempo restante + bonus por racha. */
     fun puntosDeRespuesta(segundosRestantes: Int, rachaActual: Int): Int {
         val bonusTiempo = segundosRestantes.coerceAtLeast(0)
@@ -36,6 +41,13 @@ object LogicaJuego {
         val textoCorrecto = textos["ABCD".indexOf(correcta)]
         val mezclados = textos.shuffled(azar)
         return Opciones(mezclados, "ABCD"[mezclados.indexOf(textoCorrecto)].toString())
+    }
+
+    /** P7: los nombres del duelo local. Devuelve el error a mostrar, o null si se puede empezar. */
+    fun errorEnNombresDeDuelo(nombre1: String, nombre2: String): String? = when {
+        nombre1.isBlank() || nombre2.isBlank() -> "Completá los nombres de los dos jugadores"
+        nombre1.trim().equals(nombre2.trim(), ignoreCase = true) -> "Los dos jugadores necesitan nombres distintos"
+        else -> null
     }
 
     /** El nivel sube cada 200 puntos acumulados. Nivel mínimo: 1. */

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Violeta del botón principal; más claro cuando está deshabilitado, para que se note. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="#C4B5FD" android:state_enabled="false" />
+    <item android:color="#7C3AED" />
+</selector>

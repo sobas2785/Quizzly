@@ -24,7 +24,13 @@ class GameViewModelTest : PruebaDeViewModel() {
 
     private val turno = ResultadoRonda(puntos = 20, correctas = 1, total = 1, rachaMaxima = 1)
 
-    private fun memoriaDeDuelo() = SavedStateHandle(mapOf(GameActivity.EXTRA_MODO to GameActivity.MODO_DUELO))
+    /** Un duelo local como el que arma la sala de duelo; con 3 preguntas por jugador los tests son cortos. */
+    private fun memoriaDeDuelo(rondas: Int = 3) = SavedStateHandle(
+        mapOf(
+            GameActivity.EXTRA_MODO to GameActivity.MODO_DUELO,
+            GameActivity.EXTRA_RONDAS to rondas
+        )
+    )
 
     private val GameViewModel.ahora: EstadoJuego get() = estado.value!!
 
@@ -92,7 +98,34 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `despues de tres turnos por jugador el duelo se guarda y avisa el desenlace`() {
+    fun `el duelo usa los nombres y la cantidad de preguntas de la sala`() {
+        val vm = GameViewModel(
+            app,
+            SavedStateHandle(
+                mapOf(
+                    GameActivity.EXTRA_MODO to GameActivity.MODO_DUELO,
+                    GameActivity.EXTRA_NOMBRES to arrayOf("Seba", "Maga"),
+                    GameActivity.EXTRA_RONDAS to 5
+                )
+            )
+        )
+        assertEquals(listOf("Seba", "Maga"), vm.nombres)
+
+        repeat(9) { assertTrue(vm.rondaTerminada(turno)) }
+        assertEquals(9, vm.ahora.turnosJugados)
+        assertFalse("La décima respuesta cierra un duelo de 5 por jugador", vm.rondaTerminada(turno))
+    }
+
+    @Test
+    fun `si no se eligio la cantidad el duelo es de cinco preguntas por jugador`() {
+        val vm = GameViewModel(app, SavedStateHandle(mapOf(GameActivity.EXTRA_MODO to GameActivity.MODO_DUELO)))
+
+        assertEquals(5, vm.rondasPorJugador)
+        assertEquals(listOf("Jugador 1", "Jugador 2"), vm.nombres)
+    }
+
+    @Test
+    fun `despues de las preguntas elegidas el duelo se guarda y avisa el desenlace`() {
         val usuarioId = iniciarSesion()
         val vm = GameViewModel(app, memoriaDeDuelo())
 

@@ -65,9 +65,18 @@ class ResultadoActivity : AppCompatActivity() {
 
         findViewById<MaterialButton>(R.id.btnJugarDeNuevo).setOnClickListener {
             Sonidos.toque(this)
-            startActivity(
-                Intent(this, GameActivity::class.java).putExtra(GameActivity.EXTRA_MODO, modo)
-            )
+            val otraPartida = Intent(this, GameActivity::class.java).putExtra(GameActivity.EXTRA_MODO, modo)
+
+            // En el duelo local, la revancha es con los mismos jugadores y la misma cantidad de preguntas.
+            if (modo == GameActivity.MODO_DUELO) {
+                otraPartida
+                    .putExtra(GameActivity.EXTRA_NOMBRES, intent.getStringArrayExtra(GameActivity.EXTRA_NOMBRES))
+                    .putExtra(
+                        GameActivity.EXTRA_RONDAS,
+                        intent.getIntExtra(GameActivity.EXTRA_RONDAS, LogicaJuego.RONDAS_DE_DUELO_POR_DEFECTO)
+                    )
+            }
+            startActivity(otraPartida)
             finish()
         }
 

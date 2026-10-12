@@ -49,9 +49,10 @@ class HomeActivity : AppCompatActivity() {
             abrirRuleta(GameActivity.MODO_INDIVIDUAL)
         }
 
+        // El duelo local arranca en la sala, donde se cargan los nombres y la cantidad de preguntas (P7).
         findViewById<MaterialButton>(R.id.btnDuelo).setOnClickListener {
             Sonidos.toque(this)
-            abrirRuleta(GameActivity.MODO_DUELO)
+            startActivity(Intent(this, SalaDueloActivity::class.java))
         }
 
         // Cada card arranca una partida individual de esa categoría, sin pasar por la ruleta.

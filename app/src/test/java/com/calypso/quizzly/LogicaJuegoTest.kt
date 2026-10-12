@@ -96,6 +96,14 @@ class LogicaJuegoTest {
     }
 
     @Test
+    fun `el duelo local necesita dos nombres distintos`() {
+        assertEquals(null, LogicaJuego.errorEnNombresDeDuelo("Seba", "Maga"))
+        assertTrue(LogicaJuego.errorEnNombresDeDuelo("Seba", " ") != null)
+        assertTrue(LogicaJuego.errorEnNombresDeDuelo("", "Maga") != null)
+        assertTrue("Mayúsculas y espacios no cuentan", LogicaJuego.errorEnNombresDeDuelo("seba ", "Seba") != null)
+    }
+
+    @Test
     fun `una partida sin preguntas no cuenta como perfecta`() {
         val sinPreguntas = LogicaJuego.logrosDeLaPartida(
             correctas = 0,

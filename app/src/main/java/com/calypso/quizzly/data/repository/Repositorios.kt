@@ -8,6 +8,8 @@ import com.calypso.quizzly.data.local.entity.Partida
 import com.calypso.quizzly.data.local.entity.Pregunta
 import com.calypso.quizzly.data.local.entity.Usuario
 import com.calypso.quizzly.util.HashUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 /**
  * Capa Repository: envuelve los DAO para que las Activities no toquen Room directamente.
@@ -32,17 +34,29 @@ class UsuarioRepository(context: Context) {
             Usuario(
                 nombreUsuario = nombreUsuario,
                 correo = correo,
-                contrasenaHash = HashUtils.sha256(contrasena)
+                contrasenaHash = hashear(contrasena)
             )
         )
         return ResultadoRegistro.Ok(id)
     }
 
-    /** Devuelve el usuario si el correo existe y el hash de la contraseña coincide. */
+    /**
+     * Devuelve el usuario si el correo existe y la contraseña coincide.
+     * Las cuentas del formato anterior (SHA-256 sin salt) se pasan al formato nuevo al ingresar.
+     */
     suspend fun autenticar(correo: String, contrasena: String): Usuario? {
         val usuario = dao.obtenerPorCorreo(correo) ?: return null
-        return usuario.takeIf { it.contrasenaHash == HashUtils.sha256(contrasena) }
+        val coincide = withContext(Dispatchers.Default) { HashUtils.verificar(contrasena, usuario.contrasenaHash) }
+        if (!coincide) return null
+
+        if (HashUtils.esFormatoViejo(usuario.contrasenaHash)) {
+            dao.actualizar(usuario.copy(contrasenaHash = hashear(contrasena)))
+        }
+        return usuario
     }
+
+    /** PBKDF2 es lento a propósito: se calcula fuera del hilo principal para no trabar la pantalla. */
+    private suspend fun hashear(contrasena: String) = withContext(Dispatchers.Default) { HashUtils.hashear(contrasena) }
 
     suspend fun obtenerPorId(id: Long): Usuario? = dao.obtenerPorId(id)
 

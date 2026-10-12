@@ -46,10 +46,15 @@ class GameActivity : AppCompatActivity() {
         const val MODO_DUELO = "duelo_local"
         const val MODO_DUELO_ONLINE = "duelo_online"
 
-        // Solo para el duelo online: qué duelo es, qué jugador soy (1 o 2), y los nombres y puntos de los dos.
+        /** Los nombres de los dos jugadores, en los dos duelos. */
+        const val EXTRA_NOMBRES = "nombres"
+
+        /** Solo para el duelo local: preguntas por jugador, elegidas en la sala de duelo. */
+        const val EXTRA_RONDAS = "rondas"
+
+        // Solo para el duelo online: qué duelo es, qué jugador soy (1 o 2) y los puntos de los dos.
         const val EXTRA_CODIGO_DUELO = "codigoDuelo"
         const val EXTRA_MI_NUMERO = "miNumero"
-        const val EXTRA_NOMBRES = "nombres"
         const val EXTRA_PUNTOS = "puntosDelDuelo"
 
         /** Lo que devuelve un turno online ya enviado: los puntos que sumó. */
@@ -63,6 +68,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var tvSelectedCategory: TextView
     private lateinit var cardSelectedCategory: MaterialCardView
     private lateinit var tvTurn: TextView
+    private lateinit var tvTurnHint: TextView
     private lateinit var tvScore1: TextView
     private lateinit var tvScore2: TextView
 
@@ -102,16 +108,17 @@ class GameActivity : AppCompatActivity() {
         tvSelectedCategory = findViewById(R.id.tvSelectedCategory)
         cardSelectedCategory = findViewById(R.id.cardSelectedCategory)
         tvTurn = findViewById(R.id.tvTurn)
+        tvTurnHint = findViewById(R.id.tvTurnHint)
         tvScore1 = findViewById(R.id.tvScore1)
         tvScore2 = findViewById(R.id.tvScore2)
 
-        findViewById<TextView>(R.id.tvTurnHint).text = "Girá la ruleta para descubrir tu categoría"
+        tvTurnHint.text = "Girá la ruleta para descubrir tu categoría"
+        if (viewModel.conMarcador) {
+            findViewById<TextView>(R.id.tvPlayer1).text = viewModel.nombres[0]
+            findViewById<TextView>(R.id.tvPlayer2).text = viewModel.nombres[1]
+        }
         when {
-            viewModel.esOnline -> {
-                findViewById<TextView>(R.id.tvPlayer1).text = viewModel.nombres[0]
-                findViewById<TextView>(R.id.tvPlayer2).text = viewModel.nombres[1]
-                tvTurn.text = "Tu turno contra ${viewModel.nombreDelRival}"
-            }
+            viewModel.esOnline -> tvTurn.text = "Tu turno contra ${viewModel.nombreDelRival}"
 
             !viewModel.esDuelo -> {
                 findViewById<MaterialCardView>(R.id.cardScore).visibility = View.GONE
@@ -201,7 +208,11 @@ class GameActivity : AppCompatActivity() {
             tvScore1.text = estado.puntos[0].toString()
             tvScore2.text = estado.puntos[1].toString()
         }
-        if (viewModel.esDuelo) tvTurn.text = "Turno de Jugador ${estado.jugadorDeTurno + 1}"
+        if (viewModel.esDuelo) {
+            tvTurn.text = "Turno de ${viewModel.nombres[estado.jugadorDeTurno]}"
+            val pregunta = minOf(estado.turnosJugados / 2 + 1, viewModel.rondasPorJugador)
+            tvTurnHint.text = "Pregunta $pregunta de ${viewModel.rondasPorJugador} · girá la ruleta"
+        }
 
         when (estado.fase) {
             FaseDeJuego.LISTA_PARA_GIRAR -> {
@@ -293,7 +304,7 @@ class GameActivity : AppCompatActivity() {
         val ronda = viewModel.rondaPorJugar()
         val etiqueta = when {
             viewModel.esOnline -> "Duelo contra ${viewModel.nombreDelRival}"
-            viewModel.esDuelo -> "Turno de Jugador ${(viewModel.estado.value?.jugadorDeTurno ?: 0) + 1}"
+            viewModel.esDuelo -> "Turno de ${viewModel.nombres[viewModel.estado.value?.jugadorDeTurno ?: 0]}"
             else -> "Partida individual"
         }
 
@@ -328,12 +339,13 @@ class GameActivity : AppCompatActivity() {
         val subtitulo: String
 
         if (viewModel.esDuelo) {
+            val (nombre1, nombre2) = viewModel.nombres
             titulo = when {
-                puntos[0] > puntos[1] -> "¡Ganó Jugador 1!"
-                puntos[1] > puntos[0] -> "¡Ganó Jugador 2!"
+                puntos[0] > puntos[1] -> "¡Ganó $nombre1!"
+                puntos[1] > puntos[0] -> "¡Ganó $nombre2!"
                 else -> "¡Empate!"
             }
-            subtitulo = "Jugador 1: ${puntos[0]} pts · Jugador 2: ${puntos[1]} pts"
+            subtitulo = "$nombre1: ${puntos[0]} pts · $nombre2: ${puntos[1]} pts"
         } else {
             titulo = "¡Partida terminada!"
             subtitulo = "${resumen.correctas} de ${resumen.totalPreguntas} correctas · racha máxima ${resumen.rachaMaxima}"
@@ -349,6 +361,9 @@ class GameActivity : AppCompatActivity() {
                 .putExtra(ResultadoActivity.EXTRA_DESENLACE, cierre.desenlace.name)
                 .putExtra(ResultadoActivity.EXTRA_PUNTOS_TOTALES, resumen.puntosTotales)
                 .putExtra(ResultadoActivity.EXTRA_MODO, viewModel.modo)
+                // Para la revancha del duelo local: mismos jugadores y misma cantidad de preguntas.
+                .putExtra(EXTRA_NOMBRES, viewModel.nombres.toTypedArray())
+                .putExtra(EXTRA_RONDAS, viewModel.rondasPorJugador)
                 .putStringArrayListExtra(ResultadoActivity.EXTRA_LOGROS, ArrayList(resumen.logrosNuevos))
         )
         finish()

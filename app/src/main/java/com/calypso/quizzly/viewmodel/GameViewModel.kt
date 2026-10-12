@@ -38,7 +38,9 @@ data class EstadoJuego(
     val indiceSorteado: Int,
     /** En el duelo, 0 es Jugador 1 y 1 es Jugador 2. */
     val jugadorDeTurno: Int,
-    val puntos: List<Int>
+    val puntos: List<Int>,
+    /** Duelo local: preguntas ya respondidas entre los dos, para mostrar en qué ronda van. */
+    val turnosJugados: Int = 0
 )
 
 /** La ronda que hay que abrir en la pantalla de preguntas. */
@@ -70,9 +72,6 @@ sealed interface CierreDePartida {
 class GameViewModel(app: Application, private val guardado: SavedStateHandle) : AndroidViewModel(app) {
 
     companion object {
-        /** Preguntas que responde cada jugador en un duelo, de a una por turno. */
-        private const val TURNOS_POR_JUGADOR = 3
-
         private const val CLAVE_PUNTOS = "partida_puntos"
         private const val CLAVE_CORRECTAS = "partida_correctas"
         private const val CLAVE_TOTALES = "partida_totales"
@@ -95,11 +94,16 @@ class GameViewModel(app: Application, private val guardado: SavedStateHandle) : 
     /** Categoría elegida desde una card del menú (se juega sin ruleta), o null. */
     val categoriaFija: Int? = guardado.get<Int>(GameActivity.EXTRA_CATEGORIA_FIJA)?.takeIf { it != 0 }
 
-    // Duelo online: qué duelo es, qué jugador soy (1 o 2) y cómo se llaman los dos.
+    // Duelo online: qué duelo es y qué jugador soy (1 o 2).
     private val codigoDuelo: String = guardado[GameActivity.EXTRA_CODIGO_DUELO] ?: ""
     private val miNumero: Int = guardado[GameActivity.EXTRA_MI_NUMERO] ?: 1
+
+    /** Los nombres de los dos jugadores: los del duelo online, o los que se cargaron en la sala del duelo local. */
     val nombres: List<String> =
         guardado.get<Array<String>>(GameActivity.EXTRA_NOMBRES)?.toList() ?: listOf("Jugador 1", "Jugador 2")
+
+    /** Duelo local: preguntas que responde cada jugador, de a una por turno, elegidas en la sala (P7). */
+    val rondasPorJugador: Int = guardado[GameActivity.EXTRA_RONDAS] ?: LogicaJuego.RONDAS_DE_DUELO_POR_DEFECTO
     val nombreDelRival: String get() = nombres[2 - miNumero]
 
     // Acumulado de la partida, con una posición por jugador (en la individual solo se usa la 0).
@@ -132,7 +136,7 @@ class GameViewModel(app: Application, private val guardado: SavedStateHandle) : 
     private val _cierre = MutableLiveData<CierreDePartida>()
     val cierre: LiveData<CierreDePartida> = _cierre
 
-    private fun estadoActual() = EstadoJuego(fase, indiceSorteado, jugadorDeTurno, puntos.toList())
+    private fun estadoActual() = EstadoJuego(fase, indiceSorteado, jugadorDeTurno, puntos.toList(), turnosJugados)
 
     private fun publicar() {
         guardado[CLAVE_PUNTOS] = puntos
@@ -191,7 +195,7 @@ class GameViewModel(app: Application, private val guardado: SavedStateHandle) : 
         rachas[jugador] = maxOf(rachas[jugador], resultado.rachaMaxima)
         turnosJugados++
 
-        if (!esDuelo || turnosJugados >= TURNOS_POR_JUGADOR * 2) {
+        if (!esDuelo || turnosJugados >= rondasPorJugador * 2) {
             cerrarPartida()
             return false
         }

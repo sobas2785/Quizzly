@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_splash"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="32dp"
+    tools:context=".SplashActivity">
+
+    <TextView
+        android:layout_width="104dp"
+        android:layout_height="104dp"
+        android:background="@drawable/bg_logo_splash"
+        android:gravity="center"
+        android:text="Q"
+        android:textColor="#6D28D9"
+        android:textSize="48sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Quizzly"
+        android:textColor="#FFFFFF"
+        android:textSize="40sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:gravity="center"
+        android:text="Aprendé, competí y superá tu mejor puntuación"
+        android:textColor="#DDD6FE"
+        android:textSize="15sp" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:indeterminate="true"
+        app:indicatorColor="#FFFFFF"
+        app:trackColor="#7C3AED"
+        app:trackCornerRadius="4dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Cargando..."
+        android:textColor="#C4B5FD"
+        android:textSize="13sp" />
+
+</LinearLayout>
