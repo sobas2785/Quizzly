@@ -12,15 +12,12 @@
     android:padding="32dp"
     tools:context=".SplashActivity">
 
-    <TextView
-        android:layout_width="104dp"
-        android:layout_height="104dp"
-        android:background="@drawable/bg_logo_splash"
-        android:gravity="center"
-        android:text="Q"
-        android:textColor="#6D28D9"
-        android:textSize="48sp"
-        android:textStyle="bold" />
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:contentDescription="Logo de Quizzly"
+        android:scaleType="fitCenter"
+        android:src="@drawable/logo_quizzly" />
 
     <TextView
         android:layout_width="wrap_content"

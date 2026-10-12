@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    Ícono adaptable: el símbolo de Quizzly (la Q con la ruleta) sobre el degradado violeta.
+    Android le aplica la forma de cada celular; el símbolo entra en la zona que nunca se recorta.
+    El monocromático (íconos temáticos de Android 13+) usa la Q sola, que se lee mejor en un color.
+-->
 <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
     <background android:drawable="@drawable/ic_launcher_background" />
-    <foreground android:drawable="@drawable/ic_launcher_foreground" />
-    <monochrome android:drawable="@drawable/ic_launcher_foreground" />
+    <foreground android:drawable="@mipmap/ic_launcher_foreground" />
+    <monochrome android:drawable="@drawable/ic_launcher_monocromo" />
 </adaptive-icon>

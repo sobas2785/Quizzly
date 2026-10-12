@@ -62,6 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Hoy"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:textAllCaps="false" />
 
             <com.google.android.material.button.MaterialButton
@@ -71,6 +73,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Semana"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:textAllCaps="false" />
 
             <com.google.android.material.button.MaterialButton
@@ -80,6 +84,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Mes"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:textAllCaps="false" />
 
             <com.google.android.material.button.MaterialButton
@@ -89,6 +95,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Global"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
                 android:textAllCaps="false" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
