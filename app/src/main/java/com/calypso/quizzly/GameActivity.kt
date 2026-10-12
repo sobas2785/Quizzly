@@ -10,9 +10,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.calypso.quizzly.game.Categorias
@@ -25,6 +28,7 @@ import com.calypso.quizzly.viewmodel.GameViewModel
 import com.calypso.quizzly.viewmodel.ResultadoRonda
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlin.random.Random
 
 /**
@@ -64,6 +68,7 @@ class GameActivity : AppCompatActivity() {
 
     private var currentRotation = 0f
     private var animacion: ValueAnimator? = null
+    private var dialogoSalida: AlertDialog? = null
 
     private val rondaDePreguntas = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -142,6 +147,10 @@ class GameActivity : AppCompatActivity() {
         viewModel.estado.observe(this, ::mostrar)
         viewModel.cierre.observe(this, ::cerrar)
 
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = alApretarAtras()
+        })
+
         // Si el usuario entró por una card de categoría, no hay ruleta: se juega esa categoría.
         // Solo la primera vez: si la pantalla se recrea, la ronda ya está abierta.
         if (savedInstanceState == null && viewModel.categoriaFija != null) abrirRonda()
@@ -151,7 +160,40 @@ class GameActivity : AppCompatActivity() {
         // Una animación a medias no tiene que avisarle nada al ViewModel de la pantalla nueva.
         animacion?.removeAllListeners()
         animacion?.cancel()
+        dialogoSalida?.dismiss()
         super.onDestroy()
+    }
+
+    /** "Atrás" en la ruleta: pide confirmación solo si al salir se perdería algo. */
+    private fun alApretarAtras() {
+        val fase = viewModel.estado.value?.fase
+        when {
+            // Salir mientras se guarda la partida o se envía el turno podría cortar el envío.
+            fase == FaseDeJuego.GUARDANDO ->
+                Toast.makeText(this, "Esperá un segundo: se está guardando", Toast.LENGTH_SHORT).show()
+
+            fase == FaseDeJuego.SIN_CONEXION -> confirmarSalida(
+                "¿Salir sin enviar tu turno?",
+                "Tu respuesta todavía no llegó al servidor. Si salís ahora, no se registra."
+            )
+
+            viewModel.esDuelo && viewModel.hayTurnosJugados -> confirmarSalida(
+                "¿Abandonar el duelo?",
+                "Se pierde el marcador y la partida no se guarda."
+            )
+
+            else -> finish()
+        }
+    }
+
+    private fun confirmarSalida(titulo: String, mensaje: String) {
+        if (dialogoSalida?.isShowing == true) return
+        dialogoSalida = MaterialAlertDialogBuilder(this)
+            .setTitle(titulo)
+            .setMessage(mensaje)
+            .setPositiveButton("Salir") { _, _ -> finish() }
+            .setNegativeButton("Seguir jugando", null)
+            .show()
     }
 
     private fun mostrar(estado: EstadoJuego) {
@@ -260,6 +302,7 @@ class GameActivity : AppCompatActivity() {
                 .putExtra(PreguntaActivity.EXTRA_CATEGORIA_ID, ronda.categoriaId)
                 .putExtra(PreguntaActivity.EXTRA_CANTIDAD, ronda.cantidad)
                 .putExtra(PreguntaActivity.EXTRA_ETIQUETA_JUGADOR, etiqueta)
+                .putExtra(PreguntaActivity.EXTRA_MODO, viewModel.modo)
         )
     }
 

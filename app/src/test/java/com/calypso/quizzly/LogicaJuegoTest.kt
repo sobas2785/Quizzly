@@ -6,6 +6,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import kotlin.random.Random
 
 /** Reglas de puntaje, nivel, dificultad y logros. */
 class LogicaJuegoTest {
@@ -75,6 +76,23 @@ class LogicaJuegoTest {
         assertTrue(LogicaJuego.esRachaDestacada(3))
         assertFalse(LogicaJuego.esRachaDestacada(4))
         assertTrue(LogicaJuego.esRachaDestacada(5))
+    }
+
+    @Test
+    fun `mezclar las opciones mantiene las cuatro y la letra sigue a la correcta`() {
+        val textos = listOf("Venus", "Marte", "Júpiter", "Mercurio")
+        val letrasCorrectas = mutableSetOf<String>()
+
+        repeat(40) { semilla ->
+            val mezcla = LogicaJuego.mezclarOpciones(textos, correcta = "B", azar = Random(semilla))
+
+            assertEquals(textos.toSet(), mezcla.textos.toSet())
+            assertEquals("Marte", mezcla.textos["ABCD".indexOf(mezcla.correcta)])
+            letrasCorrectas += mezcla.correcta
+        }
+
+        // Con 40 mezclas distintas, la correcta tiene que haber caído en las cuatro letras.
+        assertEquals(setOf("A", "B", "C", "D"), letrasCorrectas)
     }
 
     @Test

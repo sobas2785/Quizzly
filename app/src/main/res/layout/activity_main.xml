@@ -122,17 +122,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <TextView
-                android:id="@+id/tvForgotPassword"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="10dp"
-                android:text="¿Olvidaste tu contraseña?"
-                android:textColor="#7C3AED"
-                android:textSize="13sp"
-                android:textStyle="bold" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLogin"
                 android:layout_width="match_parent"

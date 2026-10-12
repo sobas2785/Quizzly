@@ -65,6 +65,11 @@ class LoginViewModel(app: Application) : AccesoViewModel(app) {
 /** Registro de usuario (RF-01). */
 class RegistroViewModel(app: Application) : AccesoViewModel(app) {
 
+    companion object {
+        /** Largo mínimo de la contraseña, según la especificación de la pantalla de registro. */
+        const val MINIMO_CONTRASENA = 8
+    }
+
     fun registrar(nombre: String, correo: String, contrasena: String) {
         validar(nombre, correo, contrasena)?.let {
             avisar(it)
@@ -92,7 +97,7 @@ class RegistroViewModel(app: Application) : AccesoViewModel(app) {
 
         !Patterns.EMAIL_ADDRESS.matcher(correo).matches() -> "El correo no es válido"
 
-        contrasena.length < 6 -> "La contraseña necesita al menos 6 caracteres"
+        contrasena.length < MINIMO_CONTRASENA -> "La contraseña necesita al menos $MINIMO_CONTRASENA caracteres"
 
         else -> null
     }

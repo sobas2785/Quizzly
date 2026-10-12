@@ -15,7 +15,8 @@ import org.junit.Test
 /** La ronda de preguntas: puntaje, racha, temporizador y resultado (RF-05, RF-06, RF-14). */
 class PreguntaViewModelTest : PruebaDeViewModel() {
 
-    // En todas las preguntas de prueba la respuesta correcta es la B.
+    // En el banco de prueba la correcta es siempre el texto "b". En pantalla puede quedar en cualquier
+    // letra, porque las opciones se mezclan (RF-05): por eso los tests leen la letra de la pregunta mostrada.
     private fun pregunta(n: Int) = Pregunta(
         categoriaId = 1, texto = "¿Pregunta $n?",
         opcionA = "a", opcionB = "b", opcionC = "c", opcionD = "d",
@@ -33,6 +34,12 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
 
     private val PreguntaViewModel.ahora: EstadoPregunta get() = estado.value!!
 
+    /** La letra donde quedó la correcta en la pregunta que está en pantalla. */
+    private val PreguntaViewModel.correcta: String get() = ahora.pregunta!!.respuesta
+
+    /** Cualquier letra que no sea la correcta. */
+    private val PreguntaViewModel.incorrecta: String get() = listOf("A", "B", "C", "D").first { it != correcta }
+
     private fun PreguntaViewModel.pasarALaSiguiente(numero: Int) {
         avanzar(900)
         esperarHasta { ahora.numero == numero && !ahora.respondida }
@@ -49,12 +56,23 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
+    fun `las opciones se muestran mezcladas pero la respuesta sigue siendo la misma`() {
+        val vm = rondaDe(2)
+        val p = vm.ahora.pregunta!!
+        val textos = listOf(p.opcionA, p.opcionB, p.opcionC, p.opcionD)
+
+        assertEquals(setOf("a", "b", "c", "d"), textos.toSet())
+        assertEquals("b", textos["ABCD".indexOf(p.respuesta)])
+    }
+
+    @Test
     fun `acertar al toque suma base mas tiempo y arranca la racha`() {
         val vm = rondaDe(2)
-        vm.responder("B")
+        val letra = vm.correcta
+        vm.responder(letra)
 
         assertTrue(vm.ahora.respondida)
-        assertEquals("B", vm.ahora.letraElegida)
+        assertEquals(letra, vm.ahora.letraElegida)
         assertEquals(1, vm.ahora.racha)
         assertEquals(25, vm.ahora.puntos) // 10 base + 15 segundos
     }
@@ -65,16 +83,16 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
         avanzar(4_000)
         assertEquals(11, vm.ahora.segundosRestantes)
 
-        vm.responder("B")
+        vm.responder(vm.correcta)
         assertEquals(21, vm.ahora.puntos) // 10 base + 11 segundos
     }
 
     @Test
     fun `errar corta la racha y no suma`() {
         val vm = rondaDe(3)
-        vm.responder("B")
+        vm.responder(vm.correcta)
         vm.pasarALaSiguiente(2)
-        vm.responder("A")
+        vm.responder(vm.incorrecta)
 
         assertEquals(0, vm.ahora.racha)
         assertEquals(25, vm.ahora.puntos)
@@ -83,9 +101,9 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
     @Test
     fun `la segunda respuesta seguida suma el bonus de racha`() {
         val vm = rondaDe(3)
-        vm.responder("B")
+        vm.responder(vm.correcta)
         vm.pasarALaSiguiente(2)
-        vm.responder("B")
+        vm.responder(vm.correcta)
 
         assertEquals(2, vm.ahora.racha)
         assertEquals(25 + 30, vm.ahora.puntos) // la segunda: 10 + 15 + 5 de racha
@@ -94,8 +112,8 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
     @Test
     fun `tocar dos veces no suma dos veces`() {
         val vm = rondaDe(2)
-        vm.responder("B")
-        vm.responder("B")
+        vm.responder(vm.correcta)
+        vm.responder(vm.correcta)
 
         assertEquals(25, vm.ahora.puntos)
     }
@@ -103,7 +121,7 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
     @Test
     fun `si se acaba el tiempo cuenta como incorrecta`() {
         val vm = rondaDe(2)
-        vm.responder("B")
+        vm.responder(vm.correcta)
         vm.pasarALaSiguiente(2)
 
         avanzar(15_000)
@@ -117,9 +135,9 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
     @Test
     fun `al terminar la ultima pregunta devuelve el resultado de la ronda`() {
         val vm = rondaDe(2)
-        vm.responder("B")
+        vm.responder(vm.correcta)
         vm.pasarALaSiguiente(2)
-        vm.responder("C")
+        vm.responder(vm.incorrecta)
         assertNull(vm.ahora.resultado)
 
         avanzar(900)
@@ -131,7 +149,7 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
     @Test
     fun `volver a iniciar no reinicia la ronda, como cuando se gira el celular`() {
         val vm = rondaDe(2)
-        vm.responder("B")
+        vm.responder(vm.correcta)
 
         vm.iniciar(categoriaId = 1, cantidad = 2)
 
@@ -146,7 +164,7 @@ class PreguntaViewModelTest : PruebaDeViewModel() {
         vm.iniciar(categoriaId = 1, cantidad = 5)
         esperarHasta { vm.ahora.pregunta != null }
 
-        vm.responder("B")
+        vm.responder(vm.correcta)
         avanzar(900)
         esperarHasta { vm.ahora.resultado != null }
 

@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
 import com.calypso.quizzly.game.Categorias
@@ -18,6 +20,7 @@ import com.calypso.quizzly.viewmodel.EstadoPregunta
 import com.calypso.quizzly.viewmodel.PreguntaViewModel
 import com.calypso.quizzly.viewmodel.ResultadoRonda
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.LinearProgressIndicator
 
 /**
@@ -32,6 +35,9 @@ class PreguntaActivity : AppCompatActivity() {
         const val EXTRA_CATEGORIA_ID = "categoriaId"
         const val EXTRA_CANTIDAD = "cantidad"
         const val EXTRA_ETIQUETA_JUGADOR = "etiquetaJugador"
+
+        /** El modo de juego (GameActivity.MODO_*): define qué pasa si el jugador sale de la ronda. */
+        const val EXTRA_MODO = "modo"
 
         const val RESULTADO_PUNTOS = "puntos"
         const val RESULTADO_CORRECTAS = "correctas"
@@ -53,6 +59,8 @@ class PreguntaActivity : AppCompatActivity() {
 
     /** Número de la pregunta para la que ya arrancó el sonido del cronómetro. */
     private var cronometroDePregunta = 0
+
+    private var dialogoSalida: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +97,37 @@ class PreguntaActivity : AppCompatActivity() {
         )
         viewModel.estado.observe(this, ::mostrar)
         alRecibir(viewModel.efectos, ::reaccionar)
+
+        // "Atrás" en medio de la ronda pide confirmación, para no salir por un toque sin querer.
+        // El temporizador sigue corriendo mientras tanto: frenarlo daría tiempo extra para pensar.
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() = confirmarSalida()
+        })
+    }
+
+    override fun onDestroy() {
+        dialogoSalida?.dismiss()
+        super.onDestroy()
+    }
+
+    private fun confirmarSalida() {
+        if (dialogoSalida?.isShowing == true) return
+
+        val (titulo, mensaje) = when (intent.getStringExtra(EXTRA_MODO)) {
+            GameActivity.MODO_DUELO_ONLINE ->
+                "¿Salir de la pregunta?" to "Si salís, cuenta como respuesta incorrecta y el turno pasa a tu rival."
+            GameActivity.MODO_DUELO ->
+                "¿Salir de la pregunta?" to "Volvés a la ruleta sin perder el turno."
+            else ->
+                "¿Salir de la partida?" to "Se pierde lo que jugaste en esta partida y no se guarda en tu historial."
+        }
+
+        dialogoSalida = MaterialAlertDialogBuilder(this)
+            .setTitle(titulo)
+            .setMessage(mensaje)
+            .setPositiveButton("Salir") { _, _ -> finish() }
+            .setNegativeButton("Seguir jugando", null)
+            .show()
     }
 
     override fun onPause() {

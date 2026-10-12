@@ -115,6 +115,9 @@ class GameViewModel(app: Application, private val guardado: SavedStateHandle) : 
     /** El turno online ya jugado que falta enviar (o que se está enviando). */
     private var turnoPorEnviar: ResultadoRonda? = null
     private var turnosJugados: Int = guardado[CLAVE_TURNOS_JUGADOS] ?: 0
+
+    /** En el duelo local, si ya se jugó algún turno: salir haría perder el marcador. */
+    val hayTurnosJugados: Boolean get() = turnosJugados > 0
     private var ultimaCategoriaId: Int = guardado[CLAVE_CATEGORIA] ?: (categoriaFija ?: 1)
     private var indiceSorteado: Int = guardado[CLAVE_INDICE] ?: 0
 

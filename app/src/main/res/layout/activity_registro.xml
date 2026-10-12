@@ -112,7 +112,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="14dp"
-                    android:hint="Contraseña (mínimo 6 caracteres)"
+                    android:hint="Contraseña (mínimo 8 caracteres)"
                     app:boxCornerRadiusBottomEnd="16dp"
                     app:boxCornerRadiusBottomStart="16dp"
                     app:boxCornerRadiusTopEnd="16dp"

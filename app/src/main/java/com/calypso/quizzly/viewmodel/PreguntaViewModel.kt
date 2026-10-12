@@ -102,13 +102,25 @@ class PreguntaViewModel(app: Application) : AndroidViewModel(app) {
 
         yaUsadas += pregunta.id
         _estado.value = actual.copy(
-            pregunta = pregunta,
+            pregunta = pregunta.conOpcionesMezcladas(),
             numero = actual.numero + 1,
             segundosRestantes = LogicaJuego.SEGUNDOS_POR_PREGUNTA,
             respondida = false,
             letraElegida = null
         )
         arrancarTemporizador()
+    }
+
+    /** RF-05: la misma pregunta con las opciones en otro orden y la respuesta apuntando a la letra nueva. */
+    private fun Pregunta.conOpcionesMezcladas(): Pregunta {
+        val opciones = LogicaJuego.mezclarOpciones(listOf(opcionA, opcionB, opcionC, opcionD), respuesta)
+        return copy(
+            opcionA = opciones.textos[0],
+            opcionB = opciones.textos[1],
+            opcionC = opciones.textos[2],
+            opcionD = opciones.textos[3],
+            respuesta = opciones.correcta
+        )
     }
 
     private fun arrancarTemporizador() {

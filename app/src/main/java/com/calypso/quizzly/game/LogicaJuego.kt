@@ -1,10 +1,15 @@
 package com.calypso.quizzly.game
 
+import kotlin.random.Random
+
 /** Cómo terminó la partida, para elegir el sonido del resultado. */
 enum class Desenlace { GANADA, PERDIDA, EMPATE }
 
 /** Un logro de la galería del perfil. El código es el que se guarda en logros_usuario. */
 data class Logro(val codigo: String, val nombre: String, val descripcion: String, val icono: String)
+
+/** Las cuatro opciones de una pregunta, en el orden de los botones A, B, C y D, y la letra de la correcta. */
+data class Opciones(val textos: List<String>, val correcta: String)
 
 /**
  * Reglas del juego, sin dependencias de Android ni de Room, para poder testearlas aparte.
@@ -21,6 +26,16 @@ object LogicaJuego {
         val bonusTiempo = segundosRestantes.coerceAtLeast(0)
         val bonusRacha = (rachaActual - 1).coerceAtLeast(0) * 5
         return PUNTOS_BASE + bonusTiempo + bonusRacha
+    }
+
+    /**
+     * RF-05: las opciones se muestran en orden aleatorio, para que la correcta no esté siempre en la
+     * misma letra. Devuelve las opciones mezcladas y la letra donde quedó la correcta.
+     */
+    fun mezclarOpciones(textos: List<String>, correcta: String, azar: Random = Random): Opciones {
+        val textoCorrecto = textos["ABCD".indexOf(correcta)]
+        val mezclados = textos.shuffled(azar)
+        return Opciones(mezclados, "ABCD"[mezclados.indexOf(textoCorrecto)].toString())
     }
 
     /** El nivel sube cada 200 puntos acumulados. Nivel mínimo: 1. */

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.calypso.quizzly.util.Sesion
@@ -12,6 +13,7 @@ import com.calypso.quizzly.viewmodel.EstadoHome
 import com.calypso.quizzly.viewmodel.HomeViewModel
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 /** Menú principal: saludo, progreso del usuario y accesos a las partidas (RF-12 parcial). */
 class HomeActivity : AppCompatActivity() {
@@ -101,12 +103,32 @@ class HomeActivity : AppCompatActivity() {
 
         findViewById<TextView>(R.id.tvLogout).setOnClickListener {
             Sonidos.toque(this)
-            Sesion.cerrar(this)
-            startActivity(Intent(this, MainActivity::class.java))
-            finishAffinity()
+            MaterialAlertDialogBuilder(this)
+                .setTitle("¿Cerrar sesión?")
+                .setMessage("Para volver a jugar vas a tener que ingresar con tu correo y contraseña.")
+                .setPositiveButton("Cerrar sesión") { _, _ -> cerrarSesion() }
+                .setNegativeButton("Cancelar", null)
+                .show()
         }
 
+        // Desde el menú, "Atrás" cierra la app: se pregunta antes, por si fue sin querer.
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                MaterialAlertDialogBuilder(this@HomeActivity)
+                    .setTitle("¿Salir de Quizzly?")
+                    .setPositiveButton("Salir") { _, _ -> finish() }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            }
+        })
+
         viewModel.estado.observe(this, ::mostrar)
+    }
+
+    private fun cerrarSesion() {
+        Sesion.cerrar(this)
+        startActivity(Intent(this, MainActivity::class.java))
+        finishAffinity()
     }
 
     override fun onResume() {
