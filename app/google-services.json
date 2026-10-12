@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "188969608024",
+    "project_id": "quizzly-351c0",
+    "storage_bucket": "quizzly-351c0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:188969608024:android:3095b4ac7e06ae7fa93b2d",
+        "android_client_info": {
+          "package_name": "com.calypso.quizzly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBECryMfujsrOaCU1OveS8q7rcHZniCUFg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

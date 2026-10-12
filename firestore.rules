@@ -1,0 +1,111 @@
+rules_version = '2';
+
+// Reglas de Firestore para el ranking de Quizzly (RF-10).
+// Se pegan en la consola de Firebase: Firestore Database > Reglas > Publicar.
+//
+// Cualquiera puede leer el ranking. Para escribir hace falta la sesión anónima que abre la app,
+// y cada celular solo puede tocar sus propios jugadores y crear partidas a su nombre.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // jugadores/{uid}_{usuarioId}: total de puntos de cada jugador (ranking global).
+    match /jugadores/{jugadorId} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && jugadorId.matches(request.auth.uid + '_[0-9]+')
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() <= 30
+        && request.resource.data.puntosTotales is int
+        && request.resource.data.puntosTotales >= 0;
+    }
+
+    // partidas/{auto}: puntos de cada partida (ranking por día, semana y mes).
+    // La fecha la pone el servidor, así nadie puede cargar partidas en otro período.
+    // Una partida individual da como máximo 175 puntos; 500 deja margen.
+    match /partidas/{partidaId} {
+      allow read: if true;
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.jugadorId.matches(request.auth.uid + '_[0-9]+')
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() <= 30
+        && request.resource.data.puntos is int
+        && request.resource.data.puntos >= 0
+        && request.resource.data.puntos <= 500
+        && request.resource.data.fecha == request.time;
+      allow update, delete: if false;
+    }
+
+    // duelos/{codigo}: duelo online por turnos. El código de invitación es el id del documento.
+    // Solo se puede crear en blanco, unirse a uno que espera rival, o jugar el turno propio:
+    // sumar hasta 25 puntos (el máximo de una pregunta) y pasarle el turno al otro.
+    match /duelos/{codigo} {
+      // Con sesión se puede leer un duelo puntual: hace falta para unirse con el código.
+      allow get: if request.auth != null;
+      // La lista solo trae los duelos donde participa este celular.
+      allow list: if request.auth != null && request.auth.uid in resource.data.uids;
+
+      allow create: if request.auth != null
+        && request.resource.data.codigo == codigo
+        && request.resource.data.uid1 == request.auth.uid
+        && request.resource.data.uids == [request.auth.uid]
+        && request.resource.data.jugadorId1.matches(request.auth.uid + '_[0-9]+')
+        && request.resource.data.nombre1 is string
+        && request.resource.data.nombre1.size() <= 30
+        && request.resource.data.estado == 'esperando'
+        && request.resource.data.turno == 1
+        && request.resource.data.turnosJugados == 0
+        && request.resource.data.puntos1 == 0
+        && request.resource.data.puntos2 == 0
+        && request.resource.data.correctas1 == 0
+        && request.resource.data.correctas2 == 0
+        && request.resource.data.creado == request.time
+        && request.resource.data.actualizado == request.time;
+
+      allow update: if request.auth != null && (seUne() || juegaSuTurno(1) || juegaSuTurno(2));
+
+      // Quien lo creó puede cancelarlo mientras nadie se haya unido.
+      allow delete: if request.auth != null
+        && resource.data.uid1 == request.auth.uid
+        && resource.data.estado == 'esperando';
+
+      // Los campos que la escritura cambia respecto de lo guardado.
+      function cambios() {
+        return request.resource.data.diff(resource.data).affectedKeys();
+      }
+
+      function seUne() {
+        return resource.data.estado == 'esperando'
+          && resource.data.uid1 != request.auth.uid
+          && cambios().hasOnly(['uid2', 'jugadorId2', 'nombre2', 'uids', 'estado', 'actualizado'])
+          && request.resource.data.uid2 == request.auth.uid
+          && request.resource.data.jugadorId2.matches(request.auth.uid + '_[0-9]+')
+          && request.resource.data.nombre2 is string
+          && request.resource.data.nombre2.size() <= 30
+          && request.resource.data.uids == [resource.data.uid1, request.auth.uid]
+          && request.resource.data.estado == 'en_curso'
+          && request.resource.data.actualizado == request.time;
+      }
+
+      // n es 1 o 2: el jugador al que le toca.
+      function juegaSuTurno(n) {
+        let puntos = 'puntos' + string(n);
+        let correctas = 'correctas' + string(n);
+        return resource.data.estado == 'en_curso'
+          && resource.data.turno == n
+          && resource.data['uid' + string(n)] == request.auth.uid
+          && cambios().hasOnly([puntos, correctas, 'turno', 'turnosJugados', 'estado', 'ultimaCategoriaId', 'actualizado'])
+          && request.resource.data[puntos] >= resource.data[puntos]
+          && request.resource.data[puntos] <= resource.data[puntos] + 25
+          && request.resource.data[correctas] >= resource.data[correctas]
+          && request.resource.data[correctas] <= resource.data[correctas] + 1
+          && request.resource.data.turno == 3 - n
+          && request.resource.data.turnosJugados == resource.data.turnosJugados + 1
+          && request.resource.data.estado == (request.resource.data.turnosJugados >= 6 ? 'terminado' : 'en_curso')
+          && request.resource.data.ultimaCategoriaId is int
+          && request.resource.data.actualizado == request.time;
+      }
+    }
+  }
+}

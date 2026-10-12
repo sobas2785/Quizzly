@@ -1,0 +1,7 @@
+# El script de Gradle para Linux y Mac necesita saltos de línea LF aunque se clone en Windows.
+gradlew text eol=lf
+*.bat text eol=crlf
+
+# Binarios: Git no tiene que tocarles los saltos de línea.
+*.jar binary
+*.mp3 binary

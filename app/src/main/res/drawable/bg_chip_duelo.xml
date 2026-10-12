@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Fondo redondeado de la etiqueta de estado de un duelo. El color se cambia desde el código. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#7C3AED" />
+    <corners android:radius="14dp" />
+</shape>

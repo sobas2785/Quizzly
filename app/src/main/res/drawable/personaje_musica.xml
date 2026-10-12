@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Personaje de la categoría musica (RF-13). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <path
+        android:pathData="M15,36 C15,5 85,5 85,36"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="7.5"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M15,36 C15,5 85,5 85,36"
+        android:strokeColor="#93C5FD"
+        android:strokeWidth="3.5"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M20,24 H80 A8,8 0 0,1 88,32 V69 A8,8 0 0,1 80,77 H20 A8,8 0 0,1 12,69 V32 A8,8 0 0,1 20,24 Z"
+        android:fillColor="#2563EB"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="3.5"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M30,77 L34.5,67 L65.5,67 L70,77"
+        android:fillColor="#1D4ED8"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M38.7,72.5 a1.8,1.8 0 1,0 3.6,0 a1.8,1.8 0 1,0 -3.6,0 Z M57.7,72.5 a1.8,1.8 0 1,0 3.6,0 a1.8,1.8 0 1,0 -3.6,0 Z"
+        android:fillColor="#1E1B4B" />
+    <path
+        android:pathData="M24,30 H76 A5,5 0 0,1 81,35 V56 A5,5 0 0,1 76,61 H24 A5,5 0 0,1 19,56 V35 A5,5 0 0,1 24,30 Z"
+        android:fillColor="#DBEAFE"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="2.5"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M24,34.5 L76,34.5"
+        android:strokeColor="#93C5FD"
+        android:strokeWidth="2"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M28.5,46 a8.5,8.5 0 1,0 17,0 a8.5,8.5 0 1,0 -17,0 Z"
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="2.5"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M54.5,46 a8.5,8.5 0 1,0 17,0 a8.5,8.5 0 1,0 -17,0 Z"
+        android:fillColor="#FFFFFF"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="2.5"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M33.4,47 a4.3,4.3 0 1,0 8.6,0 a4.3,4.3 0 1,0 -8.6,0 Z"
+        android:fillColor="#1E1B4B" />
+    <path
+        android:pathData="M59.4,47 a4.3,4.3 0 1,0 8.6,0 a4.3,4.3 0 1,0 -8.6,0 Z"
+        android:fillColor="#1E1B4B" />
+    <path
+        android:pathData="M37.8,45.3 a1.4,1.4 0 1,0 2.8,0 a1.4,1.4 0 1,0 -2.8,0 Z"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M63.8,45.3 a1.4,1.4 0 1,0 2.8,0 a1.4,1.4 0 1,0 -2.8,0 Z"
+        android:fillColor="#FFFFFF" />
+    <path
+        android:pathData="M45.5,53.5 Q50,58 54.5,53.5"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round"
+        android:strokeLineCap="round" />
+    <path
+        android:pathData="M22,55 a4,2.6 0 1,0 8,0 a4,2.6 0 1,0 -8,0 Z"
+        android:fillColor="#F472B6"
+        android:fillAlpha="0.55" />
+    <path
+        android:pathData="M70,55 a4,2.6 0 1,0 8,0 a4,2.6 0 1,0 -8,0 Z"
+        android:fillColor="#F472B6"
+        android:fillAlpha="0.55" />
+    <path
+        android:pathData="M10,29 H13 A5,5 0 0,1 18,34 V44 A5,5 0 0,1 13,49 H10 A5,5 0 0,1 5,44 V34 A5,5 0 0,1 10,29 Z"
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round" />
+    <path
+        android:pathData="M87,29 H90 A5,5 0 0,1 95,34 V44 A5,5 0 0,1 90,49 H87 A5,5 0 0,1 82,44 V34 A5,5 0 0,1 87,29 Z"
+        android:fillColor="#1E3A8A"
+        android:strokeColor="#1E1B4B"
+        android:strokeWidth="3"
+        android:strokeLineJoin="round" />
+
+</vector>

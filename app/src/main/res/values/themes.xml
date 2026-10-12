@@ -1,0 +1,9 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!--
+        Tema siempre claro: los colores de las pantallas están pensados para fondo claro,
+        así que la app se ve igual aunque el celular esté en modo oscuro.
+    -->
+    <style name="Base.Theme.Quizzly" parent="Theme.Material3.Light.NoActionBar" />
+
+    <style name="Theme.Quizzly" parent="Base.Theme.Quizzly" />
+</resources>

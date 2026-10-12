@@ -1,0 +1,14 @@
+*.iml
+.gradle
+/local.properties
+# Configuración de Android Studio de cada máquina: se regenera sola al abrir el proyecto.
+/.idea
+.kotlin
+# Registro que deja la herramienta de Firebase cuando algo falla.
+firebase-debug.log
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+local.properties
