@@ -55,6 +55,7 @@ classDiagram
         +actualizarProgreso(usuarioId, nivel, puntos)
         +actualizarRachaMaximaSiCorresponde(usuarioId, racha)
         +obtenerRankingGlobal() List~Usuario~
+        -hashear(contrasena) String
     }
 
     class ResultadoRegistro {
@@ -95,6 +96,9 @@ classDiagram
 
     class HashUtils {
         <<object>>
+        +hashear(contrasena, iteraciones) String
+        +verificar(contrasena, guardado) Boolean
+        +esFormatoViejo(guardado) Boolean
         +sha256(texto) String
     }
 
@@ -108,7 +112,7 @@ classDiagram
     PreguntaRepository --> PreguntaDao
     LogroRepository --> LogroUsuarioDao
 
-    UsuarioRepository ..> HashUtils : hashea la contraseña
+    UsuarioRepository ..> HashUtils : hashea y verifica contraseñas
     UsuarioRepository ..> ResultadoRegistro
     ResultadoRegistro <|-- RegistroOk
     ResultadoRegistro <|-- RegistroError

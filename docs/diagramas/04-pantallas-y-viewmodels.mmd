@@ -1,8 +1,14 @@
 classDiagram
     direction TB
 
+    class SplashActivity {
+        <<Activity · inicio>>
+    }
     class MainActivity {
         <<Activity · login>>
+    }
+    class SalaDueloActivity {
+        <<Activity>>
     }
     class RegistroActivity {
         <<Activity>>
@@ -52,6 +58,10 @@ classDiagram
         +estado: LiveData~EstadoPerfil?~
     }
 
+    class SalaDueloViewModel {
+        +nombreDelUsuario: LiveData~String~
+    }
+
     class RankingViewModel {
         +online: Boolean
         +periodo: Periodo
@@ -69,9 +79,12 @@ classDiagram
         +cancelar(duelo)
     }
 
+    SplashActivity ..> MainActivity : sin sesión
+    SplashActivity ..> HomeActivity : con sesión vigente
     MainActivity --> LoginViewModel
     RegistroActivity --> RegistroViewModel
     HomeActivity --> HomeViewModel
+    SalaDueloActivity --> SalaDueloViewModel
     PerfilActivity --> PerfilViewModel
     RankingActivity --> RankingViewModel
     DuelosActivity --> DuelosViewModel
@@ -83,5 +96,6 @@ classDiagram
     PerfilViewModel --|> AndroidViewModel
     RankingViewModel --|> AndroidViewModel
     DuelosViewModel --|> AndroidViewModel
+    SalaDueloViewModel --|> AndroidViewModel
 
     note for AndroidViewModel "GameViewModel y PreguntaViewModel<br/>también heredan de AndroidViewModel:<br/>se detallan en el diagrama de la partida"

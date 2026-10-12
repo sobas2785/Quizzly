@@ -4,8 +4,11 @@ classDiagram
     class Sesion {
         <<object>>
         +SIN_SESION = -1
+        +DIAS_DE_VIGENCIA = 30
         +iniciar(context, usuarioId)
         +usuarioId(context) Long
+        +usuarioVigente(context, ahora) Long
+        +vencio(inicio, ahora) Boolean
         +cerrar(context)
     }
 
@@ -40,6 +43,9 @@ classDiagram
 
     class HashUtils {
         <<object>>
+        +hashear(contrasena, iteraciones) String
+        +verificar(contrasena, guardado) Boolean
+        +esFormatoViejo(guardado) Boolean
         +sha256(texto) String
     }
 
@@ -48,5 +54,6 @@ classDiagram
         +AppCompatActivity.alRecibir(efectos, accion)
     }
 
-    note for Sesion "Guarda el usuario logueado<br/>en SharedPreferences"
+    note for Sesion "Guarda el usuario logueado y cuándo<br/>inició sesión, en SharedPreferences.<br/>La sesión vence a los 30 días."
+    note for HashUtils "PBKDF2 con salt (120.000 iteraciones).<br/>Acepta el SHA-256 viejo para convertirlo."
     note for Sonidos "SoundPool: efectos cortos<br/>MediaPlayer: pistas largas<br/>El silencio se recuerda entre sesiones"

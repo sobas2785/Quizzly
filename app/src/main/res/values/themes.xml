@@ -6,4 +6,9 @@
     <style name="Base.Theme.Quizzly" parent="Theme.Material3.Light.NoActionBar" />
 
     <style name="Theme.Quizzly" parent="Base.Theme.Quizzly" />
+
+    <!-- Pantalla de inicio: mientras arranca la app ya se ve el violeta, sin un destello blanco antes. -->
+    <style name="Theme.Quizzly.Inicio">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+    </style>
 </resources>

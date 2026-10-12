@@ -7,8 +7,13 @@ classDiagram
         +SEGUNDOS_POR_PREGUNTA = 15
         +PUNTOS_BASE = 10
         +PUNTOS_POR_NIVEL = 200
+        +RONDAS_DE_DUELO = 5, 10, 15
+        +RONDAS_DE_DUELO_POR_DEFECTO = 5
+        +LARGO_MAXIMO_DE_NOMBRE = 20
         +logros: List~Logro~
         +nombresDeLogros: Map~String,String~
+        +mezclarOpciones(textos, correcta, azar) Opciones
+        +errorEnNombresDeDuelo(nombre1, nombre2) String?
         +puntosDeRespuesta(segundosRestantes, rachaActual) Int
         +nivelPara(puntosTotales) Int
         +dificultadPara(nivel) String
@@ -39,6 +44,11 @@ classDiagram
         +nombre: String
         +descripcion: String
         +icono: String
+    }
+
+    class Opciones {
+        +textos: List~String~
+        +correcta: String
     }
 
     class Desenlace {
@@ -74,6 +84,7 @@ classDiagram
     Categorias "1" --> "6" Categoria : todas
     LogicaJuego "1" --> "6" Logro : logros
     LogicaJuego ..> Desenlace
+    LogicaJuego ..> Opciones : mezcla
     LogicaJuego ..> Categorias
 
     ResultadoPartida ..> LogicaJuego : nivelPara · logrosDeLaPartida

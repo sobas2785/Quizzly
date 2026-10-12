@@ -7,6 +7,8 @@ classDiagram
         -abrirRonda()
         -mostrar(estado: EstadoJuego)
         -cerrar(cierre: CierreDePartida)
+        -alApretarAtras()
+        -confirmarSalida(titulo, mensaje)
     }
 
     class QuizWheelView {
@@ -22,6 +24,9 @@ classDiagram
         +esDuelo: Boolean
         +esOnline: Boolean
         +categoriaFija: Int?
+        +nombres: List~String~
+        +rondasPorJugador: Int
+        +hayTurnosJugados: Boolean
         +estado: LiveData~EstadoJuego~
         +cierre: LiveData~CierreDePartida~
         +girar() Int?
@@ -39,6 +44,7 @@ classDiagram
         +indiceSorteado: Int
         +jugadorDeTurno: Int
         +puntos: List~Int~
+        +turnosJugados: Int
     }
 
     class FaseDeJuego {
@@ -74,6 +80,7 @@ classDiagram
         -mostrar(estado: EstadoPregunta)
         -reaccionar(efecto: EfectoRespuesta)
         -devolver(resultado: ResultadoRonda)
+        -confirmarSalida()
     }
 
     class PreguntaViewModel {
@@ -82,6 +89,7 @@ classDiagram
         +iniciar(categoriaId, cantidad)
         +responder(letra: String?)
         -siguientePregunta()
+        -conOpcionesMezcladas() Pregunta
         -arrancarTemporizador()
     }
 

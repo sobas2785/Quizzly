@@ -1,0 +1,10 @@
+<resources>
+    <!--
+        Desde Android 12 el sistema muestra su propia pantalla de arranque (el ícono sobre un fondo)
+        antes que SplashActivity. Con el mismo violeta, las dos se ven como una sola.
+    -->
+    <style name="Theme.Quizzly.Inicio">
+        <item name="android:windowBackground">@drawable/bg_splash</item>
+        <item name="android:windowSplashScreenBackground">#5B21B6</item>
+    </style>
+</resources>
