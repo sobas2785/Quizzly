@@ -23,8 +23,9 @@ interface UsuarioDao {
     @Query("UPDATE usuarios SET nivel = :nivel, puntosTotales = :puntos WHERE id = :usuarioId")
     suspend fun actualizarProgreso(usuarioId: Long, nivel: Int, puntos: Int)
 
+    /** Solo la cambia si la racha nueva supera a la guardada. */
     @Query("UPDATE usuarios SET rachaMaxima = :racha WHERE id = :usuarioId AND rachaMaxima < :racha")
-    suspend fun actualizarRachaMaximaSiCorresponde(usuarioId: Long, racha: Int)
+    suspend fun actualizarRachaMaxima(usuarioId: Long, racha: Int)
 
     @Query("SELECT * FROM usuarios ORDER BY puntosTotales DESC")
     suspend fun obtenerRankingGlobal(): List<Usuario>

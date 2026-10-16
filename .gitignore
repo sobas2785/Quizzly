@@ -12,3 +12,7 @@ firebase-debug.log
 .externalNativeBuild
 .cxx
 local.properties
+# Claves de firma de la release: nunca van al repositorio.
+*.jks
+*.keystore
+keystore.properties

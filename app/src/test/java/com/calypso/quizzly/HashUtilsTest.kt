@@ -14,7 +14,7 @@ class HashUtilsTest {
     private fun hash(contrasena: String) = HashUtils.hashear(contrasena, iteraciones = 1_000)
 
     @Test
-    fun `la contrasena correcta se verifica y una incorrecta no`() {
+    fun verificaContrasena() {
         val guardado = hash("quizzly2026")
 
         assertTrue(HashUtils.verificar("quizzly2026", guardado))
@@ -23,12 +23,12 @@ class HashUtilsTest {
     }
 
     @Test
-    fun `la misma contrasena da hashes distintos gracias al salt`() {
+    fun saltDistinto() {
         assertNotEquals(hash("quizzly2026"), hash("quizzly2026"))
     }
 
     @Test
-    fun `se guarda el algoritmo, las iteraciones, el salt y el hash`() {
+    fun formatoGuardado() {
         val partes = hash("quizzly2026").split("$")
 
         assertEquals("pbkdf2", partes[0])
@@ -38,7 +38,7 @@ class HashUtilsTest {
     }
 
     @Test
-    fun `las cuentas viejas con SHA-256 siguen entrando y se detectan para convertirlas`() {
+    fun cuentaViejaSigueEntrando() {
         val viejo = HashUtils.sha256("secreto123")
 
         assertTrue(HashUtils.esFormatoViejo(viejo))
@@ -48,7 +48,7 @@ class HashUtilsTest {
     }
 
     @Test
-    fun `un valor guardado danado no coincide ni rompe la app`() {
+    fun valorDanado() {
         assertFalse(HashUtils.verificar("x", "pbkdf2\$abc\$zz\$yy"))
         assertFalse(HashUtils.verificar("x", "pbkdf2\$1000"))
     }

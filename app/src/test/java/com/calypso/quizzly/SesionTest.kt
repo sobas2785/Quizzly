@@ -13,7 +13,7 @@ class SesionTest {
     private val inicio = 1_760_000_000_000L
 
     @Test
-    fun `la sesion dura 30 dias y despues vence`() {
+    fun venceALos30Dias() {
         assertFalse(Sesion.vencio(inicio, inicio + 29 * dia))
         assertFalse(Sesion.vencio(inicio, inicio + 30 * dia))
         assertTrue(Sesion.vencio(inicio, inicio + 30 * dia + 1))

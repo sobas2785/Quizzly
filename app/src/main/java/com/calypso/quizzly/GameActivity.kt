@@ -63,8 +63,8 @@ class GameActivity : AppCompatActivity() {
 
     private val viewModel: GameViewModel by viewModels()
 
-    private lateinit var quizWheel: QuizWheelView
-    private lateinit var btnSpin: MaterialButton
+    private lateinit var ruleta: RuletaView
+    private lateinit var btnGirar: MaterialButton
     private lateinit var tvSelectedCategory: TextView
     private lateinit var cardSelectedCategory: MaterialCardView
     private lateinit var tvTurn: TextView
@@ -72,7 +72,7 @@ class GameActivity : AppCompatActivity() {
     private lateinit var tvScore1: TextView
     private lateinit var tvScore2: TextView
 
-    private var currentRotation = 0f
+    private var anguloActual = 0f
     private var animacion: ValueAnimator? = null
     private var dialogoSalida: AlertDialog? = null
 
@@ -103,8 +103,8 @@ class GameActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        quizWheel = findViewById(R.id.quizWheel)
-        btnSpin = findViewById(R.id.btnSpin)
+        ruleta = findViewById(R.id.ruleta)
+        btnGirar = findViewById(R.id.btnGirar)
         tvSelectedCategory = findViewById(R.id.tvSelectedCategory)
         cardSelectedCategory = findViewById(R.id.cardSelectedCategory)
         tvTurn = findViewById(R.id.tvTurn)
@@ -126,7 +126,7 @@ class GameActivity : AppCompatActivity() {
             }
         }
 
-        btnSpin.setOnClickListener {
+        btnGirar.setOnClickListener {
             when (viewModel.estado.value?.fase) {
                 FaseDeJuego.LISTA_PARA_GIRAR -> girarRuleta()
                 FaseDeJuego.CATEGORIA_ELEGIDA -> {
@@ -145,8 +145,8 @@ class GameActivity : AppCompatActivity() {
         // la ruleta arranca apuntando a esa categoría, sin repetir la animación.
         viewModel.estado.value?.let {
             if (it.fase == FaseDeJuego.GIRANDO || it.fase == FaseDeJuego.CATEGORIA_ELEGIDA) {
-                currentRotation = quizWheel.getRotationForCategory(it.indiceSorteado)
-                quizWheel.rotationAngle = currentRotation
+                anguloActual = ruleta.anguloDeCategoria(it.indiceSorteado)
+                ruleta.angulo = anguloActual
                 viewModel.ruletaDetenida()
             }
         }
@@ -216,20 +216,20 @@ class GameActivity : AppCompatActivity() {
 
         when (estado.fase) {
             FaseDeJuego.LISTA_PARA_GIRAR -> {
-                btnSpin.text = "Girar ruleta"
-                btnSpin.isEnabled = true
+                btnGirar.text = "Girar ruleta"
+                btnGirar.isEnabled = true
                 mostrarCartel("Categoría: ?", null, Color.parseColor("#6D28D9"), Color.WHITE, Color.parseColor("#DDD6FE"))
             }
 
             FaseDeJuego.GIRANDO -> {
-                btnSpin.isEnabled = false
+                btnGirar.isEnabled = false
                 mostrarCartel("Girando...", null, Color.parseColor("#6B7280"), Color.WHITE, Color.parseColor("#E5E7EB"))
             }
 
             FaseDeJuego.CATEGORIA_ELEGIDA -> {
                 val categoria = Categorias.porIndice(estado.indiceSorteado)
-                btnSpin.text = "Responder →"
-                btnSpin.isEnabled = true
+                btnGirar.text = "Responder →"
+                btnGirar.isEnabled = true
                 mostrarCartel(
                     "Categoría: ${categoria.nombre}",
                     categoria.ilustracion,
@@ -240,15 +240,15 @@ class GameActivity : AppCompatActivity() {
             }
 
             FaseDeJuego.GUARDANDO -> {
-                btnSpin.isEnabled = false
+                btnGirar.isEnabled = false
                 if (viewModel.esOnline) {
                     mostrarCartel("Enviando tu turno...", null, Color.parseColor("#6B7280"), Color.WHITE, Color.parseColor("#E5E7EB"))
                 }
             }
 
             FaseDeJuego.SIN_CONEXION -> {
-                btnSpin.text = "Reintentar envío"
-                btnSpin.isEnabled = true
+                btnGirar.text = "Reintentar envío"
+                btnGirar.isEnabled = true
                 mostrarCartel("Sin conexión: tu turno no se envió", null, Color.parseColor("#B91C1C"), Color.parseColor("#FEF2F2"), Color.parseColor("#FECACA"))
             }
         }
@@ -275,20 +275,20 @@ class GameActivity : AppCompatActivity() {
         Vibracion.toque(this)
         Sonidos.girarRuleta(this)
 
-        val extraTurns = Random.nextInt(4, 7)
-        val categoryRotation = quizWheel.getRotationForCategory(indice)
-        val normalizedCurrent = currentRotation % 360f
-        val finalRotation = currentRotation + (extraTurns * 360f) + categoryRotation - normalizedCurrent
+        val vueltas = Random.nextInt(4, 7)
+        val anguloCategoria = ruleta.anguloDeCategoria(indice)
+        val anguloEnLaVuelta = anguloActual % 360f
+        val anguloFinal = anguloActual + (vueltas * 360f) + anguloCategoria - anguloEnLaVuelta
 
-        animacion = ValueAnimator.ofFloat(currentRotation, finalRotation).apply {
+        animacion = ValueAnimator.ofFloat(anguloActual, anguloFinal).apply {
             duration = 3500L
             interpolator = DecelerateInterpolator(2.5f)
 
-            addUpdateListener { quizWheel.rotationAngle = it.animatedValue as Float }
+            addUpdateListener { ruleta.angulo = it.animatedValue as Float }
 
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
-                    currentRotation = finalRotation
+                    anguloActual = anguloFinal
                     animacion = null
                     Vibracion.categoriaElegida(this@GameActivity)
                     Sonidos.ruletaDetenida(this@GameActivity)

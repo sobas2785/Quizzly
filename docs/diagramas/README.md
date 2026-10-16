@@ -1,6 +1,6 @@
 # Diagramas de clases de Quizzly
 
-Cada diagrama está en dos formatos:
+Cada diagrama está en tres formatos:
 
 - `.mmd`: el código fuente en [Mermaid](https://mermaid.js.org/), que es texto y se versiona con el proyecto.
 - `.png`: la imagen para el documento, a doble resolución.

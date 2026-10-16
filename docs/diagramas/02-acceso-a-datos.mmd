@@ -18,7 +18,7 @@ classDiagram
         +obtenerPorCorreo(correo) Usuario?
         +obtenerPorNombreUsuario(nombreUsuario) Usuario?
         +actualizarProgreso(usuarioId, nivel, puntos)
-        +actualizarRachaMaximaSiCorresponde(usuarioId, racha)
+        +actualizarRachaMaxima(usuarioId, racha)
         +obtenerRankingGlobal() List~Usuario~
     }
 
@@ -27,7 +27,6 @@ classDiagram
         +insertar(partida) Long
         +obtenerHistorialReciente(usuarioId) List~Partida~
         +contarPartidasJugadas(usuarioId) Int
-        +obtenerMejorRachaHistorica(usuarioId) Int?
         +obtenerCategoriasJugadas(usuarioId) List~Int~
         +obtenerDesde(desde) List~Partida~
     }
@@ -35,7 +34,6 @@ classDiagram
     class PreguntaDao {
         <<interface · Dao>>
         +insertarTodas(preguntas)
-        +obtenerPreguntaAleatoria(categoriaId, dificultad) Pregunta?
         +contarPreguntas() Int
         +borrarTodas()
         +obtenerPorCategoria(categoriaId) List~Pregunta~
@@ -53,7 +51,7 @@ classDiagram
         +autenticar(correo, contrasena) Usuario?
         +obtenerPorId(id) Usuario?
         +actualizarProgreso(usuarioId, nivel, puntos)
-        +actualizarRachaMaximaSiCorresponde(usuarioId, racha)
+        +actualizarRachaMaxima(usuarioId, racha)
         +obtenerRankingGlobal() List~Usuario~
         -hashear(contrasena) String
     }

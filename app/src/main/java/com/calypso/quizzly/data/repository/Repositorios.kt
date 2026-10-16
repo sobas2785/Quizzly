@@ -63,8 +63,7 @@ class UsuarioRepository(context: Context) {
     suspend fun actualizarProgreso(usuarioId: Long, nivel: Int, puntos: Int) =
         dao.actualizarProgreso(usuarioId, nivel, puntos)
 
-    suspend fun actualizarRachaMaximaSiCorresponde(usuarioId: Long, racha: Int) =
-        dao.actualizarRachaMaximaSiCorresponde(usuarioId, racha)
+    suspend fun actualizarRachaMaxima(usuarioId: Long, racha: Int) = dao.actualizarRachaMaxima(usuarioId, racha)
 
     suspend fun obtenerRankingGlobal(): List<Usuario> = dao.obtenerRankingGlobal()
 }

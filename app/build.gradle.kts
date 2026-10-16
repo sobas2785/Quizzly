@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -11,6 +13,13 @@ if (file("google-services.json").exists()) {
     apply(plugin = "com.google.gms.google-services")
 }
 
+// Firma de la versión release. La clave y sus contraseñas no están en el repositorio: se leen de un
+// archivo keystore.properties (storeFile, storePassword, keyAlias y keyPassword) cuya ruta va en la
+// propiedad "quizzly.firma" del gradle.properties del usuario, o en la variable QUIZZLY_FIRMA.
+// Sin ese archivo todo compila igual, pero la release sale sin firmar.
+val datosDeFirma = ((findProperty("quizzly.firma") as String?) ?: System.getenv("QUIZZLY_FIRMA"))
+    ?.let { ruta -> Properties().apply { file(ruta).inputStream().use { entrada -> load(entrada) } } }
+
 android {
     namespace = "com.calypso.quizzly"
     compileSdk = 35
@@ -21,17 +30,23 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+    }
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    signingConfigs {
+        if (datosDeFirma != null) {
+            create("release") {
+                storeFile = file(datosDeFirma.getProperty("storeFile"))
+                storePassword = datosDeFirma.getProperty("storePassword")
+                keyAlias = datosDeFirma.getProperty("keyAlias")
+                keyPassword = datosDeFirma.getProperty("keyPassword")
+            }
+        }
     }
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.findByName("release")
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
         }
     }
     compileOptions {
@@ -60,8 +75,6 @@ dependencies {
     // Robolectric simula Android en la PC: permite probar los ViewModels con Room y corrutinas reales.
     testImplementation("org.robolectric:robolectric:4.14.1")
     testImplementation("androidx.test:core:1.6.1")
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
     // Room (base de datos local)
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")

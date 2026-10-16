@@ -9,13 +9,6 @@ interface PreguntaDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertarTodas(preguntas: List<Pregunta>)
 
-    @Query("""
-        SELECT * FROM preguntas 
-        WHERE categoriaId = :categoriaId AND dificultad = :dificultad 
-        ORDER BY RANDOM() LIMIT 1
-    """)
-    suspend fun obtenerPreguntaAleatoria(categoriaId: Int, dificultad: String): Pregunta?
-
     @Query("SELECT COUNT(*) FROM preguntas")
     suspend fun contarPreguntas(): Int
 

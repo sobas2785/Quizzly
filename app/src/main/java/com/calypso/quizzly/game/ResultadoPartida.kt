@@ -59,7 +59,7 @@ suspend fun finalizarPartida(
     )
 
     usuarios.actualizarProgreso(usuarioId, nivel, puntosTotales)
-    usuarios.actualizarRachaMaximaSiCorresponde(usuarioId, rachaMaxima)
+    usuarios.actualizarRachaMaxima(usuarioId, rachaMaxima)
 
     // RF-10: se publica en segundo plano, así la pantalla de resultado no espera a la red.
     if (usuario != null) {

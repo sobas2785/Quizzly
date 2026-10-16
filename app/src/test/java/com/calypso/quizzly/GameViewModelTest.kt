@@ -43,7 +43,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `la ruleta sortea una categoria y esa es la que se juega`() {
+    fun ruletaEligeCategoria() {
         val vm = GameViewModel(app, memoriaDeDuelo())
         assertEquals(FaseDeJuego.LISTA_PARA_GIRAR, vm.ahora.fase)
 
@@ -60,7 +60,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `desde una card del menu se juega esa categoria con cinco preguntas`() {
+    fun partidaPorCategoria() {
         val vm = GameViewModel(app, SavedStateHandle(mapOf(GameActivity.EXTRA_CATEGORIA_FIJA to 4)))
 
         assertEquals(4, vm.categoriaFija)
@@ -70,7 +70,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `en el duelo los turnos se alternan y cada jugador suma lo suyo`() {
+    fun turnosAlternados() {
         val vm = GameViewModel(app, memoriaDeDuelo())
 
         assertTrue("Después de Jugador 1 le toca a Jugador 2", vm.rondaTerminada(turno))
@@ -84,7 +84,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `salir de la ronda con atras no cambia el turno ni el marcador`() {
+    fun salirNoCambiaElTurno() {
         val vm = GameViewModel(app, memoriaDeDuelo())
         vm.rondaTerminada(turno)
         vm.girar()
@@ -98,7 +98,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `el duelo usa los nombres y la cantidad de preguntas de la sala`() {
+    fun configuracionDeLaSala() {
         val vm = GameViewModel(
             app,
             SavedStateHandle(
@@ -117,7 +117,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `si no se eligio la cantidad el duelo es de cinco preguntas por jugador`() {
+    fun cincoPreguntasPorDefecto() {
         val vm = GameViewModel(app, SavedStateHandle(mapOf(GameActivity.EXTRA_MODO to GameActivity.MODO_DUELO)))
 
         assertEquals(5, vm.rondasPorJugador)
@@ -125,7 +125,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `despues de las preguntas elegidas el duelo se guarda y avisa el desenlace`() {
+    fun finDelDuelo() {
         val usuarioId = iniciarSesion()
         val vm = GameViewModel(app, memoriaDeDuelo())
 
@@ -144,7 +144,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `la partida individual se cierra despues de una ronda y desbloquea logros`() {
+    fun finDePartidaIndividual() {
         iniciarSesion()
         val vm = GameViewModel(app, SavedStateHandle())
 
@@ -160,7 +160,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `sin sesion iniciada no se guarda nada`() {
+    fun sinSesionNoGuarda() {
         val vm = GameViewModel(app, SavedStateHandle())
         vm.rondaTerminada(turno)
 
@@ -168,7 +168,7 @@ class GameViewModelTest : PruebaDeViewModel() {
     }
 
     @Test
-    fun `el marcador y el turno se recuperan si Android cierra la app`() {
+    fun recuperaElEstado() {
         val memoria = memoriaDeDuelo()
         val vm = GameViewModel(app, memoria)
         vm.rondaTerminada(turno)

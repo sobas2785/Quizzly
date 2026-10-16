@@ -22,7 +22,7 @@ class RankingTest {
         ZonedDateTime.of(anio, mes, dia, 0, 0, 0, 0, zona).toInstant().toEpochMilli()
 
     @Test
-    fun `cada periodo arranca a la medianoche que corresponde`() {
+    fun inicioDeCadaPeriodo() {
         assertEquals(millis(2026, 9, 25), Ranking.inicioDelPeriodo(Periodo.DIA, ahora))
         assertEquals(millis(2026, 9, 21), Ranking.inicioDelPeriodo(Periodo.SEMANA, ahora)) // lunes
         assertEquals(millis(2026, 9, 1), Ranking.inicioDelPeriodo(Periodo.MES, ahora))
@@ -30,13 +30,13 @@ class RankingTest {
     }
 
     @Test
-    fun `un lunes la semana empieza ese mismo dia`() {
+    fun semanaDesdeElLunes() {
         val lunes = ZonedDateTime.of(2026, 9, 21, 9, 0, 0, 0, zona)
         assertEquals(millis(2026, 9, 21), Ranking.inicioDelPeriodo(Periodo.SEMANA, lunes))
     }
 
     @Test
-    fun `los puntos de un mismo jugador se suman y la tabla queda ordenada`() {
+    fun sumaYOrdena() {
         val tabla = Ranking.sumarPorJugador(
             listOf(
                 PuntajeDePartida("a", "magali", 40),
@@ -56,7 +56,7 @@ class RankingTest {
     }
 
     @Test
-    fun `a igual puntaje se ordena por nombre y se usa el nombre mas reciente`() {
+    fun empateYNombreReciente() {
         val tabla = Ranking.sumarPorJugador(
             listOf(
                 PuntajeDePartida("x", "Zeta", 30),

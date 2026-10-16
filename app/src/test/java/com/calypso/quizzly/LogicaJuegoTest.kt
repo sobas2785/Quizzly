@@ -12,7 +12,7 @@ import kotlin.random.Random
 class LogicaJuegoTest {
 
     @Test
-    fun `una respuesta al toque con racha suma mas que una sobre la hora`() {
+    fun puntosPorRapidezYRacha() {
         assertEquals(25, LogicaJuego.puntosDeRespuesta(segundosRestantes = 15, rachaActual = 1))
         assertEquals(10, LogicaJuego.puntosDeRespuesta(segundosRestantes = 0, rachaActual = 1))
         // Racha de 3: 10 base + 5 seg + 10 de bonus por racha.
@@ -20,7 +20,7 @@ class LogicaJuegoTest {
     }
 
     @Test
-    fun `el nivel sube cada 200 puntos`() {
+    fun nivelCada200Puntos() {
         assertEquals(1, LogicaJuego.nivelPara(0))
         assertEquals(1, LogicaJuego.nivelPara(199))
         assertEquals(2, LogicaJuego.nivelPara(200))
@@ -28,7 +28,7 @@ class LogicaJuegoTest {
     }
 
     @Test
-    fun `la dificultad escala con el nivel`() {
+    fun dificultadPorNivel() {
         assertEquals("Facil", LogicaJuego.dificultadPara(1))
         assertEquals("Facil", LogicaJuego.dificultadPara(2))
         assertEquals("Medio", LogicaJuego.dificultadPara(3))
@@ -36,7 +36,7 @@ class LogicaJuegoTest {
     }
 
     @Test
-    fun `los logros se otorgan segun el desempeno de la partida`() {
+    fun otorgaLogros() {
         val primeraPartidaFloja = LogicaJuego.logrosDeLaPartida(
             correctas = 2,
             totalPreguntas = 5,
@@ -63,7 +63,7 @@ class LogicaJuegoTest {
     }
 
     @Test
-    fun `errar 3 o mas de 5 es perder la partida individual`() {
+    fun tresErroresPierde() {
         assertEquals(Desenlace.GANADA, LogicaJuego.desenlaceIndividual(correctas = 5, totalPreguntas = 5))
         assertEquals(Desenlace.GANADA, LogicaJuego.desenlaceIndividual(correctas = 3, totalPreguntas = 5))
         assertEquals(Desenlace.PERDIDA, LogicaJuego.desenlaceIndividual(correctas = 2, totalPreguntas = 5))
@@ -71,7 +71,7 @@ class LogicaJuegoTest {
     }
 
     @Test
-    fun `solo las rachas de 3 y de 5 tienen sonido propio`() {
+    fun rachasConSonido() {
         assertFalse(LogicaJuego.esRachaDestacada(2))
         assertTrue(LogicaJuego.esRachaDestacada(3))
         assertFalse(LogicaJuego.esRachaDestacada(4))
@@ -79,7 +79,7 @@ class LogicaJuegoTest {
     }
 
     @Test
-    fun `mezclar las opciones mantiene las cuatro y la letra sigue a la correcta`() {
+    fun mezclaDeOpciones() {
         val textos = listOf("Venus", "Marte", "Júpiter", "Mercurio")
         val letrasCorrectas = mutableSetOf<String>()
 
@@ -96,7 +96,7 @@ class LogicaJuegoTest {
     }
 
     @Test
-    fun `el duelo local necesita dos nombres distintos`() {
+    fun nombresDeDuelo() {
         assertEquals(null, LogicaJuego.errorEnNombresDeDuelo("Seba", "Maga"))
         assertTrue(LogicaJuego.errorEnNombresDeDuelo("Seba", " ") != null)
         assertTrue(LogicaJuego.errorEnNombresDeDuelo("", "Maga") != null)
@@ -104,7 +104,7 @@ class LogicaJuegoTest {
     }
 
     @Test
-    fun `una partida sin preguntas no cuenta como perfecta`() {
+    fun partidaVaciaNoEsPerfecta() {
         val sinPreguntas = LogicaJuego.logrosDeLaPartida(
             correctas = 0,
             totalPreguntas = 0,

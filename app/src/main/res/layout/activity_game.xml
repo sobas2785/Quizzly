@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.constraintlayout.widget.ConstraintLayout
+<!-- Con scroll para el celular acostado: la ruleta no entra entera a lo alto y el botón quedaba afuera. -->
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,235 +9,242 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_login_gradient"
-    android:paddingStart="20dp"
-    android:paddingTop="18dp"
-    android:paddingEnd="20dp"
-    android:paddingBottom="18dp"
-    tools:context=".GameActivity">
+    android:fillViewport="true">
 
-    <!-- SCOREBOARD -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardScore"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="#FFFFFF"
-        app:cardCornerRadius="24dp"
-        app:cardElevation="6dp"
-        app:strokeColor="#E8EAF4"
-        app:strokeWidth="1dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:paddingStart="20dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="18dp"
+        tools:context=".GameActivity">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- SCOREBOARD -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardScore"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="18dp"
-            android:paddingTop="14dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="14dp">
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="6dp"
+            app:strokeColor="#E8EAF4"
+            app:strokeWidth="1dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- PLAYER 1 -->
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="18dp"
+                android:paddingTop="14dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="14dp">
 
-                <TextView
-                    android:id="@+id/tvPlayer1"
-                    android:layout_width="wrap_content"
+                <!-- PLAYER 1 -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Jugador 1"
-                    android:textColor="#7C3AED"
-                    android:textSize="14sp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvPlayer1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Jugador 1"
+                        android:textColor="#7C3AED"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvScore1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="0"
+                        android:textColor="#111827"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- VS -->
+                <TextView
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:background="@drawable/bg_vs_circle"
+                    android:gravity="center"
+                    android:text="VS"
+                    android:textColor="#6B7280"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/tvScore1"
-                    android:layout_width="wrap_content"
+                <!-- PLAYER 2 -->
+                <LinearLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="0"
-                    android:textColor="#111827"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvPlayer2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Jugador 2"
+                        android:textColor="#2563EB"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvScore2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="0"
+                        android:textColor="#111827"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <!-- VS -->
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- TURN BADGE -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTurn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            app:cardBackgroundColor="#EDE9FE"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:layout_constraintTop_toBottomOf="@id/cardScore"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
             <TextView
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:background="@drawable/bg_vs_circle"
-                android:gravity="center"
-                android:text="VS"
-                android:textColor="#6B7280"
-                android:textSize="12sp"
+                android:id="@+id/tvTurn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="8dp"
+                android:text="Turno de Jugador 1"
+                android:textColor="#6D28D9"
+                android:textSize="15sp"
                 android:textStyle="bold" />
 
-            <!-- PLAYER 2 -->
-            <LinearLayout
-                android:layout_width="0dp"
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tvTurnHint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Girá la ruleta para descubrir tu categoría"
+            android:textColor="#6B7280"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/cardTurn"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- WHEEL -->
+        <FrameLayout
+            android:id="@+id/wheelContainer"
+            android:layout_width="320dp"
+            android:layout_height="338dp"
+            android:layout_marginTop="18dp"
+            app:layout_constraintTop_toBottomOf="@id/tvTurnHint"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- Pointer shadow -->
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_gravity="top|center_horizontal"
+                android:translationY="-1dp"
+                android:text="▼"
+                android:textColor="#D1D5DB"
+                android:textSize="40sp" />
 
-                <TextView
-                    android:id="@+id/tvPlayer2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Jugador 2"
-                    android:textColor="#2563EB"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+            <!-- Main pointer -->
+            <TextView
+                android:id="@+id/tvPointer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center_horizontal"
+                android:elevation="12dp"
+                android:text="▼"
+                android:textColor="#111827"
+                android:textSize="36sp" />
 
-                <TextView
-                    android:id="@+id/tvScore2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:text="0"
-                    android:textColor="#111827"
-                    android:textSize="30sp"
-                    android:textStyle="bold" />
+            <com.calypso.quizzly.RuletaView
+                android:id="@+id/ruleta"
+                android:layout_width="304dp"
+                android:layout_height="304dp"
+                android:layout_gravity="bottom|center_horizontal" />
 
-            </LinearLayout>
+        </FrameLayout>
 
-        </LinearLayout>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- TURN BADGE -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardTurn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        app:cardBackgroundColor="#EDE9FE"
-        app:cardCornerRadius="14dp"
-        app:cardElevation="0dp"
-        app:layout_constraintTop_toBottomOf="@id/cardScore"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/tvTurn"
+        <!-- CATEGORY RESULT -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardSelectedCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingStart="16dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="16dp"
-            android:paddingBottom="8dp"
-            android:text="Turno de Jugador 1"
-            android:textColor="#6D28D9"
-            android:textSize="15sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="12dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="3dp"
+            app:strokeColor="#DDD6FE"
+            app:strokeWidth="1dp"
+            app:layout_constraintTop_toBottomOf="@id/wheelContainer"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-    </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/tvSelectedCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="18dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="10dp"
+                android:text="Categoría: ?"
+                android:textColor="#6D28D9"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/tvTurnHint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Girá la ruleta para descubrir tu categoría"
-        android:textColor="#6B7280"
-        android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/cardTurn"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        </com.google.android.material.card.MaterialCardView>
 
-    <!-- WHEEL -->
-    <FrameLayout
-        android:id="@+id/wheelContainer"
-        android:layout_width="320dp"
-        android:layout_height="338dp"
-        android:layout_marginTop="18dp"
-        app:layout_constraintTop_toBottomOf="@id/tvTurnHint"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        <!-- SPIN BUTTON -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGirar"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginTop="16dp"
+            android:text="Girar ruleta"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            app:backgroundTint="#7C3AED"
+            app:cornerRadius="18dp"
+            app:rippleColor="#A78BFA"
+            app:layout_constraintTop_toBottomOf="@id/cardSelectedCategory"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
 
-        <!-- Pointer shadow -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
-            android:translationY="-1dp"
-            android:text="▼"
-            android:textColor="#D1D5DB"
-            android:textSize="40sp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Main pointer -->
-        <TextView
-            android:id="@+id/tvPointer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="top|center_horizontal"
-            android:elevation="12dp"
-            android:text="▼"
-            android:textColor="#111827"
-            android:textSize="36sp" />
-
-        <com.calypso.quizzly.QuizWheelView
-            android:id="@+id/quizWheel"
-            android:layout_width="304dp"
-            android:layout_height="304dp"
-            android:layout_gravity="bottom|center_horizontal" />
-
-    </FrameLayout>
-
-    <!-- CATEGORY RESULT -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardSelectedCategory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="3dp"
-        app:strokeColor="#DDD6FE"
-        app:strokeWidth="1dp"
-        app:layout_constraintTop_toBottomOf="@id/wheelContainer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <TextView
-            android:id="@+id/tvSelectedCategory"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingStart="18dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="10dp"
-            android:text="Categoría: ?"
-            android:textColor="#6D28D9"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- SPIN BUTTON -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnSpin"
-        android:layout_width="0dp"
-        android:layout_height="58dp"
-        android:layout_marginTop="16dp"
-        android:text="Girar ruleta"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="17sp"
-        android:textStyle="bold"
-        app:backgroundTint="#7C3AED"
-        app:cornerRadius="18dp"
-        app:rippleColor="#A78BFA"
-        app:layout_constraintTop_toBottomOf="@id/cardSelectedCategory"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

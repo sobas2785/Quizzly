@@ -18,5 +18,5 @@ Música (nota). La cola de la Q es la flecha que marca la categoría.
   superior) usa la Q sola de `res/drawable/ic_launcher_monocromo.xml`.
 - **Pantalla de inicio y login:** `res/drawable-xxxhdpi/logo_quizzly.png`.
 
-Si el logo cambia, los archivos sin fondo y los recursos de la app se vuelven a generar a partir de
-los originales con el script `herramientas/logo/logo.ps1`, que no forma parte del repositorio.
+Si el logo cambia, hay que volver a generar a partir de los originales los archivos sin fondo y los
+recursos de la app.

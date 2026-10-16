@@ -33,7 +33,7 @@ class DueloOnlineTest {
     )
 
     @Test
-    fun `cada jugador sabe que numero es y quien es su rival`() {
+    fun numeroYRival() {
         val d = duelo()
 
         assertEquals(1, d.numeroDe(seba))
@@ -44,7 +44,7 @@ class DueloOnlineTest {
     }
 
     @Test
-    fun `solo le toca al jugador del turno y solo con el duelo en curso`() {
+    fun turnoDelJugador() {
         assertTrue(duelo(turno = 1).esTurnoDe(seba))
         assertFalse(duelo(turno = 1).esTurnoDe(magali))
         assertTrue(duelo(turno = 2).esTurnoDe(magali))
@@ -54,7 +54,7 @@ class DueloOnlineTest {
     }
 
     @Test
-    fun `el desenlace es distinto para cada jugador y solo existe al terminar`() {
+    fun desenlacePorJugador() {
         val terminado = duelo(EstadoDuelo.TERMINADO, puntos1 = 45, puntos2 = 50)
 
         assertEquals(Desenlace.PERDIDA, terminado.desenlacePara(seba))
@@ -64,14 +64,14 @@ class DueloOnlineTest {
     }
 
     @Test
-    fun `el duelo se cierra con el sexto turno`() {
+    fun cierraEnElSextoTurno() {
         assertEquals(EstadoDuelo.EN_CURSO, ReglasDueloOnline.estadoTrasElTurno(turnosJugadosAntes = 0))
         assertEquals(EstadoDuelo.EN_CURSO, ReglasDueloOnline.estadoTrasElTurno(turnosJugadosAntes = 4))
         assertEquals(EstadoDuelo.TERMINADO, ReglasDueloOnline.estadoTrasElTurno(turnosJugadosAntes = 5))
     }
 
     @Test
-    fun `los codigos nuevos tienen seis caracteres sin letras confusas`() {
+    fun codigoDeSeisCaracteres() {
         repeat(200) { semilla ->
             val codigo = ReglasDueloOnline.nuevoCodigo(Random(semilla))
             assertEquals(6, codigo.length)
@@ -81,7 +81,7 @@ class DueloOnlineTest {
     }
 
     @Test
-    fun `el codigo se acepta en minusculas y con espacios o guiones`() {
+    fun codigoNormalizado() {
         assertEquals("ABC234", ReglasDueloOnline.normalizarCodigo(" abc-234 "))
         assertEquals("ABC234", ReglasDueloOnline.normalizarCodigo("ABC 234"))
 
@@ -91,7 +91,7 @@ class DueloOnlineTest {
     }
 
     @Test
-    fun `la lista muestra primero donde me toca, despues los que esperan y al final los terminados`() {
+    fun ordenDeLaLista() {
         val terminado = duelo(EstadoDuelo.TERMINADO, codigo = "TERM22", actualizado = 900)
         val esperaAlRival = duelo(turno = 2, codigo = "RVAL22", actualizado = 500)
         val meTocaViejo = duelo(turno = 1, codigo = "VJEJ22", actualizado = 100)

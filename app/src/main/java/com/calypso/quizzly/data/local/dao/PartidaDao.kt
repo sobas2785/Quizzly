@@ -15,9 +15,6 @@ interface PartidaDao {
     @Query("SELECT COUNT(*) FROM partidas WHERE usuarioId = :usuarioId")
     suspend fun contarPartidasJugadas(usuarioId: Long): Int
 
-    @Query("SELECT MAX(rachaMaxima) FROM partidas WHERE usuarioId = :usuarioId")
-    suspend fun obtenerMejorRachaHistorica(usuarioId: Long): Int?
-
     @Query("SELECT DISTINCT categoriaId FROM partidas WHERE usuarioId = :usuarioId")
     suspend fun obtenerCategoriasJugadas(usuarioId: Long): List<Int>
 

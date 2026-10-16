@@ -11,11 +11,11 @@ classDiagram
         -confirmarSalida(titulo, mensaje)
     }
 
-    class QuizWheelView {
+    class RuletaView {
         <<View · Canvas>>
-        +rotationAngle: Float
+        +angulo: Float
         +onDraw(canvas)
-        +getRotationForCategory(index) Float
+        +anguloDeCategoria(indice) Float
     }
 
     class GameViewModel {
@@ -125,7 +125,7 @@ classDiagram
     }
 
     GameActivity --> GameViewModel
-    GameActivity --> QuizWheelView
+    GameActivity --> RuletaView
     GameActivity ..> PreguntaActivity : abre la ronda
     GameActivity ..> ResultadoActivity : muestra el resultado
     GameViewModel --> EstadoJuego

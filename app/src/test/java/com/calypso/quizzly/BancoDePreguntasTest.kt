@@ -21,7 +21,7 @@ class BancoDePreguntasTest {
     }
 
     @Test
-    fun `cada pregunta tiene cuatro opciones distintas y una respuesta valida`() {
+    fun opcionesValidas() {
         preguntas.forEach { p ->
             val texto = p.getString("texto")
             val opciones = p.getJSONArray("opciones").let { o -> (0 until o.length()).map { o.getString(it) } }
@@ -35,13 +35,13 @@ class BancoDePreguntasTest {
     }
 
     @Test
-    fun `no hay preguntas repetidas`() {
+    fun sinRepetidas() {
         val textos = preguntas.map { it.getString("texto").trim().lowercase() }
         assertEquals(textos.size, textos.toSet().size)
     }
 
     @Test
-    fun `hay 10 preguntas por dificultad en cada categoria`() {
+    fun diezPorDificultad() {
         Categorias.todas.forEach { categoria ->
             listOf("Facil", "Medio", "Dificil").forEach { dificultad ->
                 val cantidad = preguntas.count {
